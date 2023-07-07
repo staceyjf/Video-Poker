@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to Video Poker</title>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/card-library/css/cardstarter.min.css"> <!--Card Deck -->
     <link rel="icon" type="image/x-icon" href="/imgs/random.png">  <!--change this favicon -->
     <script defer src="js/main.js"></script>
 
@@ -23,12 +24,46 @@
             </div>
 
             <!-- Wager payout Table -->
-            <div id="payoutOdds"></div> <!-- WOULD I NEED ANYTHING MORE IF JS IS UPDATING -->
-            <div id="payoutPlayer"></div> <!-- WOULD I NEED ANYTHING MORE IF JS IS UPDATING -->
+            <div id="payoutOdds">
+                <ul id="pOddsList">
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+            </div>
+            <div id="payoutPlayer">
+                <ul id="pPlayerList">
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>                
+            </div> 
 
             <!-- Game board -->
-            <div id="gameTable"></div>
-            <!-- <h6>HOLD</h6>GET HELP ON THIS -->
+            <div id="gameTable">
+                <h3>Original Deck</h3>
+                <section id="original-deck-container" class="card-container"></section>
+                <button>RE-SHUFFLE DECK</button>
+                <h3>Shuffled Deck</h3>
+                <section id="shuffled-deck-container" class="card-container">
+                </section>
+                <!-- <h6>HOLD</h6> PLACEHOLDER sibling of H6 styled by hidden vs visible class -->
+            </div>
+            
 
             <!-- Wager elements -->
             <div id="creditTotal">YOU HAVE 90 COINS</div>

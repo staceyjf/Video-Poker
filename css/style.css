@@ -23,7 +23,6 @@
       "gTableBox gTableBox gTableBox gTableBox gTableBox"
       ". cTotalBox cTotalBox cTotalBox ."
       ". nGameButton bButton dButton .";
-
   }
   
   .introbox {
@@ -80,4 +79,8 @@
     color: white;
     text-align: center;
     border: 1px solid purple;
+  }
+
+  ul {
+    list-style: none;
   }
