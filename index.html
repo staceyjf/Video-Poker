@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Video Poker</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" type="image/x-icon" href="/imgs/random.png">  <!--change this favicon -->
+    <script defer src="js/main.js"></script>
+
+
+</head>
+<body>
+    <main>
+        <div class="container">
+        <!-- GET HELP ON THIS TWO TONE BACKGROUND -->
+            <div class="introbox"><h1>VIDEO POKER</h1></div>
+
+            <!-- Onscreen Messaging element -->
+            <div id="gameStatus">
+                <h2>ROYAL FLUSH!</h2>
+                <h3>YOU WIN</h3>
+            </div>
+
+            <!-- Wager payout Table -->
+            <div id="payoutOdds"></div> <!-- WOULD I NEED ANYTHING MORE IF JS IS UPDATING -->
+            <div id="payoutPlayer"></div> <!-- WOULD I NEED ANYTHING MORE IF JS IS UPDATING -->
+
+            <!-- Game board -->
+            <div id="gameTable"></div>
+            <!-- <h6>HOLD</h6>GET HELP ON THIS -->
+
+            <!-- Wager elements -->
+            <div id="creditTotal">YOU HAVE 90 COINS</div>
+            <button id="newGameButton">NEW GAME</button>
+            <div id="betButton">
+                <button id="plusButton">+</button>
+                BET
+                <button id="minusButton">-</button>
+            </div>
+            <button id="dealButton">DEAL</button>
+            </div>
+
+        </div>
+    </main>    
+</body>
+</html>
