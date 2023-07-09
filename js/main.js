@@ -41,7 +41,7 @@ class videoPokerGame {
     this.winnerOutcome = null; // TO DO: do i need this 
     this.playerHand = this.cardEls.map((div) => {
       const playerCard = rndCard.dealtCard(); // randommly generated card
-      div.classList.add(`card.${playerCard}`);
+      div.classList.add('card', `${playerCard}`);
     });
     // this.credits = ???; // TO DO: this.credits? check the player's avaiable credits?!?
     this.render();
