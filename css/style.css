@@ -78,7 +78,7 @@
   h1, h2, h3 {
     color: white;
     text-align: center;
-    border: 1px solid purple;
+    /* border: 1px solid purple; */
   }
 
   ul {

@@ -1,70 +1,65 @@
+console.log('You got this superstar!')
 /*----- constants -----*/
-/*----- card deck -----*/
-const suits = ['♠', '♣', '♦', '♥'];
-const ranks = ['02', '03', '04', '05', '06', '07', '08', '09', '10', 'J', 'Q', 'K', 'A'];
-
-// Build an 'original' deck of 'card' objects used to create shuffled decks
-const originalDeck = buildOriginalDeck();
-renderDeckInContainer(originalDeck, document.getElementById('original-deck-container'));
+const rndCard = { // creates a single random card
+    suit: ['♠', '♣', '♦', '♥'],
+    rank: ['02', '03', '04', '05', '06', '07', '08', '09', '10', 'J', 'Q', 'K', 'A'],
+    dealtCard:function() {
+      const rndSuitIdx = Math.floor(Math.random() * this.suit.length);
+      const rndRankIdx = Math.floor(Math.random() * this.rank.length);
+      return cardFace = [this.suit[rndSuitIdx] + this.rank[rndRankIdx]]; //card str eg♠A
+    }
+  };
 
 /*----- app's state (variables) -----*/
-let shuffledDeck;
+let game;
 
 /*----- cached element references -----*/
-const shuffledContainer = document.getElementById('shuffled-deck-container');
+const boardEl = document.getElementById('gameTable'); // the board
+
+/*----- classes -----*/
+class videoPokerGame { 
+  // using class to encapsulation eg bundle data and functions into an object
+  // for ease of reading the code 
+  // like the JS equivalent of <div>
+  // to see this in the console use game
+  constructor(boardElement, messageElement) {
+    // this keyword is the new object
+    // don't need a return in constructor
+    this.boardElement = boardElement;
+    // this.messageElement = messageElement; // haven't created msgEl so won't long anthing
+    this.cardEls = [...boardElement.querySelectorAll('div')]; // [] and ... convert NodeList into an array
+  }
+
+  // static properties as the winningCombos never change per a class 
+  static winningCombos = [
+    // TO DO: game logic goes here
+  ];
+
+  play() {
+    // initialize the game' state
+    // this binds it to the constructor 
+    this.winnerOutcome = null; // TO DO: do i need this 
+    this.playerHand = this.cardEls.map((div) => {
+      const playerCard = rndCard.dealtCard(); // randommly generated card
+      div.classList.add(`card.${playerCard}`);
+    });
+    // this.credits = ???; // TO DO: this.credits? check the player's avaiable credits?!?
+    this.render();
+  }
+
+  render() { 
+    console.log('Render game to see the render() is working...'); // to check the output in console game.play()
+    // TO DO: 
+    // update the messaging in gamestatus based on winnerOutcome
+  }
+}
 
 /*----- event listeners -----*/
-document.querySelector('button').addEventListener('click', renderNewShuffledDeck);
 
 /*----- functions -----*/
-// need to limit the number of cards appearing
-function getNewShuffledDeck() {
-  // Create a copy of the originalDeck (leave originalDeck untouched!)
-  const tempDeck = [...originalDeck];
-  const newShuffledDeck = [];
-  while (tempDeck.length) {
-    // Get a random index for a card still in the tempDeck
-    const rndIdx = Math.floor(Math.random() * tempDeck.length);
-    // Note the [0] after splice - this is because splice always returns an array and we just want the card object in that array
-    newShuffledDeck.push(tempDeck.splice(rndIdx, 1)[0]);
-  }
-  return newShuffledDeck;
-}
+init();
 
-function renderNewShuffledDeck() {
-  // Create a copy of the originalDeck (leave originalDeck untouched!)
-  shuffledDeck = getNewShuffledDeck();
-  renderDeckInContainer(shuffledDeck, shuffledContainer);
-}
-
-function renderDeckInContainer(deck, container) {
-  container.innerHTML = '';
-  // // Let's build the cards as a string of HTML
-  // let cardsHtml = '';
-  // deck.forEach(function(card) {
-  //   cardsHtml += `<div class="card ${card.face}"></div>`;
-  // });
-  // Or, use reduce to 'reduce' the array into a single thing - in this case a string of HTML markup 
-  const cardsHtml = deck.reduce(function(html, card) {
-    return html + `<div class="card ${card.face}"></div>`;
-  }, '');
-  container.innerHTML = cardsHtml;
-}
-
-function buildOriginalDeck() {
-  const deck = [];
-  // Use nested forEach to generate card objects
-  suits.forEach(function(suit) {
-    ranks.forEach(function(rank) {
-      deck.push({
-        // The 'face' property maps to the library's CSS classes for cards
-        face: `${suit}${rank}`,
-        // Setting the 'value' property for game of blackjack, not war
-        value: Number(rank) || (rank === 'A' ? 11 : 10)
-      });
-    });
-  });
-  return deck;
-}
-
-renderNewShuffledDeck();
+function init() {
+  game = new videoPokerGame(boardEl); //msgEl would go here if using messgaELement
+  game.play(); 
+};
