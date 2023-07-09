@@ -17,18 +17,26 @@ class ShufflingCard {
     this.cardEls = [...boardElement.querySelectorAll('div')]; // [] and ... convert NodeList into an array
   }
 
-  renderRndCard() { // creates a single random card
+  clearBoard() {
+    this.cardEls.forEach((div) => {
+      div.classList.remove(); // TO DO: FIX - Remove all classes
+    });
+  }
+
+  renderRndCard() { // renders the card into the board
     this.playerHand = this.cardEls.map((div) => {
-      const playerCard = this.RndCard(); // randomly generated card
+      const playerCard = this.rndCard(); // randomly generated card
+      // div.classList.remove(playerCard); // remove the previous rndCard
+      // div.classList.remove('card', 'xlarge'); // TO DO: need to reset the class before adding
       div.classList.add('card', `${playerCard}`, 'xlarge');
       return playerCard;
     });
   } 
 
-  RndCard() { // creates a single random card
+  rndCard() { // creates a single random card
     const rndSuitIdx = Math.floor(Math.random() * this.suit.length);
     const rndRankIdx = Math.floor(Math.random() * this.rank.length);
-    const card = this.suit[rndSuitIdx] + this.rank[rndRankIdx]; // card str eg♠A
+    const card = this.suit[rndSuitIdx] + this.rank[rndRankIdx]; // card string eg♠A
     return card;
   } 
 }
@@ -39,11 +47,8 @@ class VideoPokerGame {
   // like the JS equivalent of <div>
   // to see this in the console use game
   constructor(boardElement, messageElement) {
-    // this keyword is the new object
-    // don't need a return in constructor
     this.boardElement = boardElement;
-    // this.messageElement = messageElement; // haven't created msgEl so won't long anthing
-    // this.cardEls = [...boardElement.querySelectorAll('div')]; // [] and ... convert NodeList into an array
+    this.messageElement = messageElement; // haven't created msgEl so won't long anything
   }
 
   // static properties as the winningCombos never change per a class 
@@ -53,15 +58,9 @@ class VideoPokerGame {
 
   play() {
     // initialize the game' state
-    // this binds it to the constructor 
+    // this binds it to the constructor
+    // ShuffingCard is responsible for rendering the cards 
     this.winnerOutcome = null; // TO DO: do i need this 
-    const shufflingCard = new ShufflingCard(this.boardElement); // Create an instance of ShufflingCard
-    shufflingCard.renderRndCard(); // Render the random cards
-    // this.playerHand = this.cardEls.map((div) => {
-    //   const playerCard = new ShufflingCard(); // randomly generated card
-    //   div.classList.add('card', `${playerCard}`, 'xlarge');
-    //   return playerCard;
-    // };
     // this.credits = ???; // TO DO: this.credits? check the player's avaiable credits?!?
     this.render();
   }
@@ -87,6 +86,7 @@ function init() {
 };
 
 function deal() {
+  // need to remove the class first
   const shufflingCard = new ShufflingCard(boardEl); // Render the random cards
   shufflingCard.renderRndCard(); // Render the random card
 }
