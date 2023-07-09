@@ -48,7 +48,15 @@
 
   #gameTable {
     grid-area: gTableBox;
+    display: flex;
     border: 1px solid purple;
+  }
+
+/* TO DO: the CSS properties in .card are overtaking these   */
+  #gameTable > div { 
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: stretch;
   }
 
   #creditTotal {
