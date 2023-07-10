@@ -1,36 +1,39 @@
 console.log('You got this!')
 /*----- constants -----*/
-const boardEl = document.getElementById('gameTable'); // the board
-const numOfCards = 5; 
+const numOfCards = 5;
 
 /*----- app's state (variables) -----*/
 let game;
 
 /*----- cached element references -----*/
-
+const boardEl = document.getElementById('gameTable'); // the board
 
 /*----- classes -----*/
 class ShufflingCard {
-  constructor(boardElement) {
+  constructor() {
     this.suit = ['♠', '♣', '♦', '♥'];
     this.rank = ['02', '03', '04', '05', '06', '07', '08', '09', '10', 'J', 'Q', 'K', 'A'];
-    this.boardElement = boardElement;
-    this.boardArray = Array.from(this.boardElement); // convert the DOM El into an array
+    this.playerHandArray = []; // this is the player's hand array
   }
 
   clearBoard() { // clears the board
     boardEl.innerHTML = '';
   }
 
-  renderRndCard() { // renders the cards into the board
+  playerHandArrayRndCard() { // playerHandArrays the cards into the board
    this.clearBoard();
     for (let i=0; i < numOfCards; i++) {
       const playerCard = this.rndCard(); // randomly generated card
       const newDiv = document.createElement('div'); 
       newDiv.classList.add('card', playerCard, 'xlarge');
       boardEl.appendChild(newDiv);
+      this.playerHandArray.push(playerCard);
+      this.handString = this.playerHandArray.join(' ');
+      console.log(this.handString);
     } 
   } 
+
+  static staticHandString = this.handString;
 
   rndCard() { // creates a single random card
     const rndSuitIdx = Math.floor(Math.random() * this.suit.length);
@@ -42,31 +45,42 @@ class ShufflingCard {
 
 class VideoPokerGame { 
   // using class to encapsulation eg bundle data and functions into an object
-  // for ease of reading the code 
   // like the JS equivalent of <div>
-  // to see this in the console use game
-  constructor(boardElement, messageElement) {
-    this.boardElement = boardElement;
+  constructor(messageElement) {
     this.messageElement = messageElement; // haven't created msgEl so won't long anything
   }
 
   // static properties as the winningCombos never change per a class 
-  static winningCombos = [
-    // TO DO: game logic goes here
-  ];
+  // static winningCombos = [
+
+  // ];
+
+  handCount(str) {  // passes the converted array 
+    let count = {}; // creates an object
+    for (let i = 0; i < str.length; i++) {
+      let handRank = str.charAt(i);
+      if (count[handRank]) {
+        count[handRank]++;
+      } else {
+        count[handRank] = 1
+      }
+    }
+    console.log(count);
+    return count;
+  }
 
   play() {
     // initialize the game' state
     // this binds it to the constructor
-    // ShuffingCard is responsible for rendering the cards 
+    // ShuffingCard is responsible for playerHandArraying the cards 
     this.winnerOutcome = null; // TO DO: do i need this 
     // this.credits = ???; // TO DO: this.credits? check the player's avaiable credits?!?
     this.render();
   }
 
   render() { 
-    deal();
-    console.log('this is where i need to update render to make sure its setting up a new game'); // to check the output in console game.play()
+    deal(); // is this the right function for here? 
+    console.log('is function deal the best to playerHandArray a new game'); // to check the output in console game.play()
     // TO DO: 
     // update the messaging in gamestatus based on winnerOutcome
   }
@@ -78,13 +92,20 @@ document.getElementById('dealButton').addEventListener('click', deal); // Deal B
 
 /*----- functions -----*/
 function init() {
-  const game = new VideoPokerGame(boardEl); //msgEl would go here if using messgaELement
+  const game = new VideoPokerGame(); //msgEl would go here if using messgaELement
   game.play(); 
 };
 
 init();
 
 function deal() {
-  const shufflingCard = new ShufflingCard(boardEl); // Intantiate a new instance
-  shufflingCard.renderRndCard(); // Render the random card
+  const shufflingCard = new ShufflingCard(); // Intantiate a new instance
+  shufflingCard.playerHandArrayRndCard(); // playerHandArray the random card
 }
+
+function getWinnerOutcome() {
+  const videoPokerGame = new VideoPokerGame(); // Intantiate a new instance
+  videoPokerGame.handCount(ShufflingCard.staticHandString);
+}
+
+getWinnerOutcome();
