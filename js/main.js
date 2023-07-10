@@ -1,6 +1,7 @@
 console.log('You got this!')
 /*----- constants -----*/
 const boardEl = document.getElementById('gameTable'); // the board
+const numOfCards = 5; 
 
 /*----- app's state (variables) -----*/
 let game;
@@ -14,23 +15,21 @@ class ShufflingCard {
     this.suit = ['♠', '♣', '♦', '♥'];
     this.rank = ['02', '03', '04', '05', '06', '07', '08', '09', '10', 'J', 'Q', 'K', 'A'];
     this.boardElement = boardElement;
-    this.cardEls = [...boardElement.querySelectorAll('div')]; // [] and ... convert NodeList into an array
+    this.boardArray = Array.from(this.boardElement); // convert the DOM El into an array
   }
 
-  clearBoard() {
-    this.cardEls.forEach((div) => {
-      div.classList.remove(); // TO DO: FIX - Remove all classes
-    });
+  clearBoard() { // clears the board
+    boardEl.innerHTML = '';
   }
 
-  renderRndCard() { // renders the card into the board
-    this.playerHand = this.cardEls.map((div) => {
+  renderRndCard() { // renders the cards into the board
+   this.clearBoard();
+    for (let i=0; i < numOfCards; i++) {
       const playerCard = this.rndCard(); // randomly generated card
-      // div.classList.remove(playerCard); // remove the previous rndCard
-      // div.classList.remove('card', 'xlarge'); // TO DO: need to reset the class before adding
-      div.classList.add('card', `${playerCard}`, 'xlarge');
-      return playerCard;
-    });
+      const newDiv = document.createElement('div'); 
+      newDiv.classList.add('card', playerCard, 'xlarge');
+      boardEl.appendChild(newDiv);
+    } 
   } 
 
   rndCard() { // creates a single random card
@@ -74,19 +73,18 @@ class VideoPokerGame {
 }
 
 /*----- event listeners -----*/
-document.getElementById('newGameButton').addEventListener('click', init); // New Game Btn
-document.getElementById('dealButton').addEventListener('click', deal); // Deal Btn TO DO: NOT A FUNCTION
+document.getElementById('newGameButton').addEventListener('click', deal); // TO DO: check this is the right function
+document.getElementById('dealButton').addEventListener('click', deal); // Deal Btn 
 
 /*----- functions -----*/
-init();
-
 function init() {
-  game = new VideoPokerGame(boardEl); //msgEl would go here if using messgaELement
+  const game = new VideoPokerGame(boardEl); //msgEl would go here if using messgaELement
   game.play(); 
 };
 
+init();
+
 function deal() {
-  // need to remove the class first
-  const shufflingCard = new ShufflingCard(boardEl); // Render the random cards
+  const shufflingCard = new ShufflingCard(boardEl); // Intantiate a new instance
   shufflingCard.renderRndCard(); // Render the random card
 }
