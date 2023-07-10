@@ -7,13 +7,13 @@ let game;
 
 /*----- cached element references -----*/
 const boardEl = document.getElementById('gameTable'); // the board
+let playerHandArray = [];
 
 /*----- classes -----*/
 class ShufflingCard {
   constructor() {
     this.suit = ['♠', '♣', '♦', '♥'];
     this.rank = ['02', '03', '04', '05', '06', '07', '08', '09', '10', 'J', 'Q', 'K', 'A'];
-    this.playerHandArray = []; // this is the player's hand array
   }
 
   clearBoard() { // clears the board
@@ -27,9 +27,8 @@ class ShufflingCard {
       const newDiv = document.createElement('div'); 
       newDiv.classList.add('card', playerCard, 'xlarge');
       boardEl.appendChild(newDiv);
-      this.playerHandArray.push(playerCard);
-      this.handString = this.playerHandArray.join(' ');
-      console.log(this.handString);
+      playerHandArray.push(playerCard); // do i need this?
+      // console.log(this.handString);
     } 
   } 
 
@@ -39,6 +38,8 @@ class ShufflingCard {
     const rndSuitIdx = Math.floor(Math.random() * this.suit.length);
     const rndRankIdx = Math.floor(Math.random() * this.rank.length);
     const card = this.suit[rndSuitIdx] + this.rank[rndRankIdx]; // card string eg♠A
+    console.log(this.suit[rndSuitIdx]);
+    console.log(this.rank[rndRankIdx]);
     return card;
   } 
 }
@@ -55,18 +56,13 @@ class VideoPokerGame {
 
   // ];
 
-  handCount(str) {  // passes the converted array 
-    let count = {}; // creates an object
-    for (let i = 0; i < str.length; i++) {
-      let handRank = str.charAt(i);
-      if (count[handRank]) {
-        count[handRank]++;
-      } else {
-        count[handRank] = 1
-      }
-    }
+  handCount(arr) {  // passes the converted array 
+    console.log(arr);
+    const count = arr.reduce(function(acc,cur) {
+      acc[cur] = acc[cur] ? acc[cur] +1 : 1
+      return acc 
+    }, {})
     console.log(count);
-    return count;
   }
 
   play() {
@@ -105,7 +101,7 @@ function deal() {
 
 function getWinnerOutcome() {
   const videoPokerGame = new VideoPokerGame(); // Intantiate a new instance
-  videoPokerGame.handCount(ShufflingCard.staticHandString);
+  videoPokerGame.handCount(playerHandArray);
 }
 
 getWinnerOutcome();
