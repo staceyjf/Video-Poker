@@ -22,7 +22,7 @@
       "pOddsBox pOddsBox pPlayerBox gStatusBox gStatusBox"
       "gTableBox gTableBox gTableBox gTableBox gTableBox"
       ". cTotalBox cTotalBox cTotalBox ."
-      ". nGameButton bButton dButton .";
+      ". nGameButton bButton dealButton drawButton";
   }
   
   .introbox {
@@ -75,7 +75,12 @@
   }
 
   #dealButton {
-    grid-area: dButton;
+    grid-area: dealButton;
+    background-color: #D20915;
+  }
+
+  #drawButton {
+    grid-area: drawButton;
     background-color: #D20915;
   }
 
@@ -83,6 +88,18 @@
     color: white;
     text-align: center;
     /* border: 1px solid purple; */
+  }
+
+  h6 {
+    color: white;
+    font-size: xx-large;
+    background:#0B5106;
+    padding: 25px 50px;
+  }
+
+  .hide { /* hids the h6 when not clicked on */
+    display: none;
+    background: transparent;
   }
 
   ul {
