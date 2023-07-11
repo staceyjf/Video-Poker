@@ -1,5 +1,6 @@
 console.log('Whoo whoo rock n roll!')
 /*----- constants -----*/
+const numOfCards = 5; // the number of cards on the board
 const suit = ['♠', '♣', '♦', '♥'];
 const rank = ['02', '03', '04', '05', '06', '07', '08', '09', '10', 'J', 'Q', 'K', 'A'];
 const handRanks = {
@@ -18,6 +19,8 @@ const handRanks = {
 let isWinningHand;
 let isGameFinished;
 let handEvaluator; // hand evaluator object that counts the player arr eg {A: 2}
+// TO DO: check if i need all three
+let holdCounter;
 let playerHandArray; // eg [♠A, ..] used to evaluate game logic
 let playerSuitArray; // eg [♠, ..] used to evaluate game logic
 let playerRankArray; // eg [A, ..] used to evaluate game logic
@@ -25,20 +28,22 @@ let playerRankArray; // eg [A, ..] used to evaluate game logic
 /*----- cached element references -----*/
 const boardEl = document.getElementById('gameTable'); // the board
 const statusEl = document.getElementById('gameStatus'); // the msg box
-const numOfCards = 5; // the number of cards on the board
+const bettingEl = document.getElementById('totalBet'); // betting total
 
 /*----- event listeners -----*/
 // TO DO: check all the functions here
 document.getElementById('newGameButton').addEventListener('click', init); // New Game
 document.getElementById('dealButton').addEventListener('click', deal); // 1st hand
-document.getElementById('drawButton').addEventListener('click', draw); // New cards
+document.getElementById('gameTable').addEventListener('click', hold); // hold cards
+document.getElementById('drawButton').addEventListener('click', draw); // Final hand
+document.getElementById('plusButton').addEventListener('click', addMoney); // Add
+document.getElementById('minusButton').addEventListener('click', minusMoney); // Minus
 
 /*----- functions -----*/
 init();
 
 /*----- Game flow -----*/
 function varReset() { 
-  boardEl.innerHTML = ''; // clears the board
   statusEl.innerHTML = ''; // clears the msg box
   isWinningHand = false; // set the card back to 'in play'
   isGameFinished = false; // sets the game back to 'in play'
@@ -49,14 +54,6 @@ function varReset() {
 }
 
 function play() { // setting up the board and msg box
-  console.log("The below relate to the play()");
-  console.log(statusEl);
-  console.log(handEvaluator);
-  console.log(playerHandArray);
-  console.log(playerSuitArray);
-  console.log(playerRankArray);
-  // boardEl.innerHTML = '<h6 class="hide">HOLD</h6>'; //TO DO: how do i get the H6 back
-  
    // adds 5 'backs' of cards to the Games table
   for (let i=0; i < numOfCards; i++) {
     let newDiv = document.createElement('div'); // adds a <div> to hold the card 
@@ -65,14 +62,18 @@ function play() { // setting up the board and msg box
    } 
  }
 
+/*-----Betting logic -----*/
+function addMoney() {
+
+}
+
+function minusMoney() {
+  
+}
+
 function deal() { // deals the player's first add
-  varReset(); // clears the board, msg box, counter and playerHand arrays
-  console.log("The below relate to the deal()");
-  console.log(statusEl);
-  console.log(handEvaluator);
-  console.log(playerHandArray);
-  console.log(playerSuitArray);
-  console.log(playerRankArray);
+  boardEl.innerHTML = ''; // clears the divs in the board container
+  varReset(); // clears msg box, counter/handEvaluator and playerHand arrays
 
   function rndCard() { // creates a single random card
     rndSuitIdx = Math.floor(Math.random() * suit.length);
@@ -84,38 +85,66 @@ function deal() { // deals the player's first add
   // adds 5 cards to the Games table
   for (let i=0; i < numOfCards; i++) {
      const playerCard = rndCard(); // randomly generated card
-     let newDiv = document.createElement('div'); // adds a <div> to hold the card
+     let newDiv = document.createElement('div'); // creates a <div> to hold the card
      newDiv.classList.add('card', playerCard, 'xlarge'); // adds relevant classes to render card
-     boardEl.appendChild(newDiv); // appends to Games Table
-   } 
- } 
-
-function draw() {// let's the player swop cards and then ends the game
-  varReset(); 
-
-  function rndCard() { // creates a single random card
-    rndSuitIdx = Math.floor(Math.random() * suit.length);
-    rndRankIdx = Math.floor(Math.random() * rank.length);
-    const card = suit[rndSuitIdx] + rank[rndRankIdx]; // card string eg♠A
-    return card;
-  } 
-
-  // adds 5 cards to the Games table
-  for (let i=0; i < numOfCards; i++) {
-     const playerCard = rndCard(); // randomly generated card
-     let newDiv = document.createElement('div'); // adds a <div> to hold the card
-     newDiv.classList.add('card', playerCard, 'xlarge'); // adds relevant classes to render card
+     newDiv.id = i; // gives the card div a unique ID
      boardEl.appendChild(newDiv); // appends to Games Table
      playerHandArray.push(playerCard); // eg [♠A, ..] for winning logic
      playerSuitArray.push(suit[rndSuitIdx]); // eg [♠, ..] for winning logic
      playerRankArray.push(rank[rndRankIdx]); // eg [A, ..] for winning logic
-   } 
-   console.log("The below relate to the draw()");
-   console.log(statusEl);
-   console.log(handEvaluator);
-  //  console.log(playerHandArray);
-  //  console.log(playerSuitArray);
-  //  console.log(playerRankArray);
+   }
+
+   console.log(playerHandArray);
+ } 
+
+ function hold(event) { 
+  // creating the HOLD Header (holdEl)
+  let holdEl = document.createElement('h6'); // creates a h6 
+  holdEl.innerText = 'HOLD';
+  event.target.appendChild(holdEl); // appends the 
+  console.log(event);
+  console.log(event.target);
+  console.log(event.target.childNodes[0]); 
+  
+  holdCounter--;
+ }
+
+function draw() {// let's the player swop cards and then ends the game
+  // varReset(); // clears msg box, counter/handEvaluator and playerHand arrays
+  const cardEls = boardEl.querySelectorAll('.card'); // card divs
+  // add something that replaces the non-hold card
+
+  function rndCard() { // creates a single random card
+    rndSuitIdx = Math.floor(Math.random() * suit.length);
+    rndRankIdx = Math.floor(Math.random() * rank.length);
+    const card = suit[rndSuitIdx] + rank[rndRankIdx]; // card string eg♠A
+    return card;
+  } 
+
+  let playerCard; // randomly generated card
+
+  // need to change i so that its just the number of left over cards
+  // for (let i=0; i < holdCounter; i++) {  
+  //   playerCard = rndCard(); 
+  //   let newDiv = document.createElement('div'); // adds a <div> to hold the card
+  //    newDiv.classList.add('card', playerCard, 'xlarge'); // adds relevant classes to render card
+  //    boardEl.appendChild(newDiv); // appends to Games Table
+  //    // TO DO: need to check this as some cards would be held
+  //   //  playerHandArray.push(playerCard); // eg [♠A, ..] for winning logic
+  //   //  playerSuitArray.push(suit[rndSuitIdx]); // eg [♠, ..] for winning logic
+  //   //  playerRankArray.push(rank[rndRankIdx]); // eg [A, ..] for winning logic
+  //  } 
+
+   cardEls.forEach((card => { // looping through cardEls
+    playerCard = rndCard(); 
+    if (!card.children[0]) { // eg
+      console.log(playerHandArray);
+      console.log(playerCard);
+      console.log(card.id); 
+      playerHandArray.splice(card.id, 1, playerCard);// index of the cards that don't have hold
+      card.className = `card ${playerCard} xlarge`;
+    }
+  }))
 
    getWinnerOutcome(playerRankArray); // its time to check if there was a winner
 }
@@ -127,30 +156,14 @@ function getWinnerOutcome(arr) {  // counts rank/suit/rank&suit of a hand
     return acc 
   }, {})
 
-  console.log("The below relate to the getWinnerOutcome()");
-  console.log("shows relevant playerArray used for game logic - always 5 key/value pairs on new game & deal bts");
-  console.log(statusEl);
-  console.log(handEvaluator);
-  // console.log(playerHandArray);
-  // console.log(playerSuitArray);
-  // console.log(playerRankArray);
-  
   // matches the outcome of the counter to game logic eg handRanks object
   // game logic for matching 2/3/4 ranks
   for (let key in handEvaluator) { 
-    if (handEvaluator[key] === 2 || handEvaluator[key] === 3 || handEvaluator[key] === 4) {
+    if (handEvaluator[key] === handRanks["Two Pair"] || handEvaluator[key] === handRanks["Three of a Kind"] || handEvaluator[key] === handRanks["Four of a Kind"]) {
       isWinningHand = true;
       break;
     } 
-  } 
-
-  // not working on my handRanks object???
-  // for (let key in handEvaluator) { 
-  //   if (handEvaluator[key] === `${handRanks["Two Pair"]}` || handEvaluator[key] === `${handRanks["Three of a Kind"]}` || handEvaluator[key] === `${handRanks["Four of a Kind"]}`) {
-  //     isWinningHand = true;
-  //     break;
-  //   } 
-  // }
+  }
 
   isGameFinished = true;
   
@@ -163,13 +176,14 @@ function getWinnerOutcome(arr) {  // counts rank/suit/rank&suit of a hand
   }
 }
 
-
 /*----- other -----*/
 function render() {  // responsible for rendering all state to the dom
-  varReset(); // clears the board, msg box, counter and playerHand arrays
+  boardEl.innerHTML = ''; // clears the game table
+  varReset(); // msg box, counter and playerHand arrays
   play(); // 5 upside cards
 }
 
 function init() { // responsible for initializing the state
+  holdCounter = 5;
   render();
 };
