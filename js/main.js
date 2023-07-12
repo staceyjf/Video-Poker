@@ -1,90 +1,76 @@
 console.log('Figjam!')
-console.log('Fix - cards to 52, betting and unclicking')
+console.log('Fix - cards to 52, fix init, betting, sorting the handranks and unclicking')
 /*----- constants -----*/
 const numOfCards = 5; // the number of cards on the board
 const suit = ['♠', '♣', '♦', '♥'];
 const rank = ['02', '03', '04', '05', '06', '07', '08', '09', '10', 'J', 'Q', 'K', 'A'];
-const handRanks = [ // this is now an array NOT OBJECT FIX GAME LOGIC
+const handRanks = [ // this is now an array NOT OBJECT FIX GAME
   {
-    hand: "Jacks or Better",
-    index: 0,  
-    count: 2, // fix game logic extra condition to count 2
-    pOdds: 1,
-    playerOdds: getPlayerOdds(),
-    priority: 1,
-  }, 
+    hand: "PAYOUT TABLE", 
+    count: 0,
+    pOdds: " xBET",
+    priority: 0,
+  },  
   {
-    hand: "Two Pair", 
-    index: 1, 
-    count: 2, // Based on playerRankArray
-    pOdds: 2,
-    playerOdds: getPlayerOdds(),
-    priority: 2,
-  },
-  {
-    hand: "Three of a Kind",
-    index: 2, 
-    count: 3, // Based on playerRankArray
-    pOdds: 1,
-    playerOdds: getPlayerOdds(),
-    priority: 3,
-  },
-  {
-    hand: "Straight",
-    index: 3, 
-    count: 5, // TO FIX "5 relates to suit
-    pOdds: 1,
-    playerOdds: getPlayerOdds(),
-    priority: 4,
-  },
-  {
-    hand: "Flush",
-    index: 4, 
-    count: 5, // Based on playerSuitArray
-    pOdds: 1,
-    playerOdds: getPlayerOdds(),
-    priority: 5,
-  },
-  {
-    hand: "Full House",
-    index: 5, 
-    count: 0, // "Three of one rank and two of another rank"
-    pOdds: 1,
-    playerOdds: getPlayerOdds(),
-    priority: 6,
-  },   
-  {
-    hand: "Four of a Kind",
-    index: 6, 
-    count: 4, // Based on playerRankArray
-    pOdds: 1,
-    playerOdds: getPlayerOdds(),
-    priority: 7,
+    hand: "Royal Flush",
+    count: 5, // "A, K, Q, J, 10 of the same suit"
+    pOdds: 250,
+    priority: 9,
   },
   {
     hand: "Straight Flush",
-    index: 7, 
     count: 5, // "Five consecutive cards of the same suit"
-    pOdds: 1,
-    playerOdds: getPlayerOdds(),
+    pOdds: 50,
     priority: 8,
   },
   {
-    hand: "Royal Flush",
-    index: 8,
-    count: 5, // "A, K, Q, J, 10 of the same suit"
+    hand: "Four of a Kind",
+    count: 4, // Based on playerRankArray
+    pOdds: 40,
+    priority: 7,
+  },
+  {
+    hand: "Full House",
+    count: 0, // "Three of one rank and two of another rank"
+    pOdds: 10,
+    priority: 6,
+  },
+  {
+    hand: "Flush",
+    count: 5, // Based on playerSuitArray
+    pOdds: 7,
+    priority: 5,
+  },
+  {
+    hand: "Straight",
+    count: 5, // TO FIX "5 relates to suit
+    pOdds: 5,
+    priority: 4,
+  },
+  {
+    hand: "Three of a Kind",
+    count: 3, // Based on playerRankArray
+    pOdds: 3,
+    priority: 3,
+  },
+  {
+    hand: "Two Pair", 
+    count: 2, // Based on playerRankArray
+    pOdds: 2,
+    priority: 2,
+  },
+  {
+    hand: "Jacks or Better",  
+    count: 2, // Based on playerRankArray
     pOdds: 1,
-    playerOdds: getPlayerOdds(),
-    priority: 9,
-  },           
+    priority: 1,
+  },
 ];
 
 /*----- app's state (variables) -----*/
 let isWinningHand;
 let isGameFinished;
-let modplayerHandArray; // hand evaluator object that counts the player arr eg {A: 2}
-let modplayerSuitArray;
-let modplayerRankArray;
+
 // TO DO: check if i need all three
 let holdCounter; // count the number of cards that are held
 let moneyPot;
@@ -96,6 +82,8 @@ let playerRankArray; // eg [A, ..] used to evaluate game logic
 /*----- cached element references -----*/
 const boardEl = document.getElementById('gameTable'); // the board
 const statusEl = document.getElementById('gameStatus'); // the msg box
+const payoutEls = document.getElementById('payoutOdds'); // the msg box
+const payoutPlayerEls = document.getElementById('payoutPlayer'); // the msg box
 const coinEl = document.getElementById('creditTotal'); // player's available coin
 const betEl = document.getElementById('totalBet');
 const bettingEl = document.getElementById('totalBet'); // betting total
@@ -111,7 +99,7 @@ document.getElementById('plusButton').addEventListener('click', addMoney); // Ad
 document.getElementById('minusButton').addEventListener('click', minusMoney); // Minus
 
 /*----- functions -----*/
-init();
+
 
 /*----- Game flow -----*/
 function play() { // resetting els except moneyPot & betPot
@@ -151,6 +139,18 @@ function minusMoney() {
 }
 
 function getPlayerOdds() {
+  let newList = document.createElement('ul'); // creates a <ul> element
+  newList.id = 'pOddsHands'; // sets the ID of the <ul> element
+  payoutEls.appendChild(newList); // appends the <ul> element to the 'payoutEls' element
+  
+  for (let i = 0; i < 11; i++) {
+    let newListEls = document.createElement('li'); // creates a <li> element
+    newListEls.id = i; // sets the ID of the <li> element
+    // need to sort the other way
+    newListEls.innerText = `${handRanks[i].hand}     ${handRanks[i].pOdds}`;
+    newList.appendChild(newListEls); // appends the <li> element to the <ul> element
+  }
+
 
 }
 
@@ -208,17 +208,19 @@ function draw() {// let's the player swop cards and then ends the game
 }
 
 /*-----Did the player win logic -----*/
-function getWinnerOutcome(arr) { // Count of the suit
-  modplayerHandArray = arr.reduce(function(acc, curr) { // creates the object counter
+function getWinnerOutcome(arr) { 
+  
+  // Count of the suit
+  playerSuitArray = arr.reduce(function(acc, curr) { // creates the object counter
     let currSuit = curr.split("")[0]; 
     acc[currSuit] = acc[currSuit] ? acc[currSuit] +1 : 1
     return acc
   }, {})
 
-  console.log(modplayerHandArray);
+  console.log(playerSuitArray);
 
   // Count of Rank
-  let countedCards = arr.reduce(function (acc, curr) {
+  let playerRankArray = arr.reduce(function (acc, curr) {
 	const myDict = { J: 11, Q: 12, K: 13, A: 14 }; 
   // Giving these numerical values / other cards rep by two digits eg 08, 09, 10
 	let currCardValue = curr.split("").slice(1).join(""); // ranks
@@ -231,17 +233,40 @@ function getWinnerOutcome(arr) { // Count of the suit
   return acc;
   }, {});
 
-  console.log(countedCards);
+  console.log(playerRankArray);
 
   // matches the outcome of the counter to game logic eg handRanks object
-  // game logic for matching 2/3/4 ranks
-  for (let key in handEvaluator) { 
-    if (handEvaluator[key] === handRanks["Two Pair"] || handEvaluator[key] === handRanks["Three of a Kind"] || handEvaluator[key] === handRanks["Four of a Kind"]) {
+  // HOW DO I MAKE THEM WAIT BEFORE PROCEEDING
+
+  
+  // game logic for matching 5 suits
+  for (let key in playerSuitArray) { 
+    if (playerSuitArray[key] === handRanks[5].count) {
       isWinningHand = true;
       break;
     } 
   }
+  // game logic for matching 2/3/5 ranks
+  for (let key in playerRankArray) { 
+    if (playerRankArray[key] === handRanks[3].count ||
+      playerRankArray[key] === handRanks[7].count ||
+      playerRankArray[key] === handRanks[8].count) {
+        isWinningHand = true;
+        break;
+    } 
+  }
 
+  // Check for "Jacks or Better" win
+  for (let key in playerRankArray) {
+    if ((playerRankArray[11] >= handRanks[9].count) ||
+        (playerRankArray[12] >= handRanks[9].count) ||
+        (playerRankArray[13] >= handRanks[9].count) ||
+        (playerRankArray[14] >= handRanks[9].count)) {
+          isWinningHand = true;
+          break;
+    }
+  }
+  
   isGameFinished = true;
   
   if (isGameFinished) {
@@ -254,6 +279,8 @@ function getWinnerOutcome(arr) { // Count of the suit
 }
 
 /*----- other -----*/
+init();
+
 function render() {  // responsible for rendering all state to the dom
   play(); // 5 upside cards
 }
@@ -263,7 +290,10 @@ function init() { // responsible for initializing the state
   //where can I put this so it doesn't get reset every new game
   moneyPot = 100; // sets the initial credit total
   betPot = 0; // set the initial bet count to 0
+  getPlayerOdds();
   whatIsMyBet(moneyPot, betPot);
+  payoutEls.innerHTML = ''; // clear the payOut table
+  payoutPlayerEls.innerHTML = ''; // clears the game table
   boardEl.innerHTML = ''; // clears the game table
   statusEl.innerHTML = ''; // clears the msg box
   isWinningHand = false; // set the card back to 'in play'
