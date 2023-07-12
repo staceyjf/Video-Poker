@@ -22,7 +22,7 @@ body {
     "pOddsBox pOddsBox pPlayerBox gStatusBox gStatusBox"
     "gTableBox gTableBox gTableBox gTableBox gTableBox"
     ". cTotalBox cTotalBox cTotalBox ."
-    ". nGameButton bButton dealButton drawButton";
+    "rButton nGameButton bButton dealButton drawButton";
   }
 
 .introbox {
@@ -58,9 +58,14 @@ body {
 #creditTotal {
   grid-area: cTotalBox;
   background-color: #DFC63A;
-  font-size: 75px;
+  font-size: 50px;
   text-align: center;
   padding: 10px;
+  }
+
+#resetButton {
+  grid-area: rButton;
+  background-color: white;
   }
 
 #newGameButton {
@@ -75,10 +80,14 @@ body {
 
 #totalBet {
   font-size: xx-large;
+  display:inline-block;
 }
 
 #plusButton, #minusButton {
   background-color: #0B5106;
+  display:inline-block;
+  padding: 20px;
+  font-size: large;
   }
 
 #dealButton {
