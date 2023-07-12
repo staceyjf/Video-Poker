@@ -4,101 +4,111 @@
     box-sizing: border-box;
   }
 
-  body {
-    background-color: black;
+body {
+  background-color: black;
   }
 
-  .container {
-    background-color: black;
-    height: 100vh;
-    margin: 0;
-    display: grid;
-    gap: 10px;
-    border: 10px solid black;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr; /* desktop display - 5 columns */
-    grid-template-rows: 0.2fr 0.85fr 0.75fr 0.2fr 0.15fr; /* 5 rows - auto fills in any remaining space */
-    grid-template-areas:
-      "hdr hdr hdr hdr hdr" 
-      "pOddsBox pOddsBox pPlayerBox gStatusBox gStatusBox"
-      "gTableBox gTableBox gTableBox gTableBox gTableBox"
-      ". cTotalBox cTotalBox cTotalBox ."
-      ". nGameButton bButton dealButton drawButton";
-  }
-  
-  .introbox {
-    grid-area: hdr;
-    background-color: #D20915;
-    border: 1px solid purple;
-  }
-  
-  #gameStatus {
-    grid-area: gStatusBox;
-    background-color: #0B5106;
+.container {
+  background-color: black;
+  height: 100vh;
+  margin: 0;
+  display: grid;
+  gap: 10px;
+  border: 10px solid black;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr; /* desktop display - 5 columns */
+  grid-template-rows: 0.2fr 0.85fr 0.75fr 0.2fr 0.15fr; /* 5 rows - auto fills in any remaining space */
+  grid-template-areas:
+    "hdr hdr hdr hdr hdr" 
+    "pOddsBox pOddsBox pPlayerBox gStatusBox gStatusBox"
+    "gTableBox gTableBox gTableBox gTableBox gTableBox"
+    ". cTotalBox cTotalBox cTotalBox ."
+    ". nGameButton bButton dealButton drawButton";
   }
 
-  #payoutOdds {
-    grid-area: pOddsBox;
-    background-color: #8E8E8E;
+.introbox {
+  grid-area: hdr;
+  background-color: #D20915;
+  border: 1px solid purple;
+  }
+
+#gameStatus {
+  grid-area: gStatusBox;
+  background-color: #0B5106;
+  }
+
+#payoutOdds {
+  grid-area: pOddsBox;
+  background-color: #8E8E8E;
   } 
-  
-  #payoutPlayer {
-    grid-area: pPlayerBox;
-    background-color: #B3B3B3;
+
+#payoutPlayer {
+  grid-area: pPlayerBox;
+  background-color: #B3B3B3;
   }
 
-  #gameTable {
-    grid-area: gTableBox;
-    display: flex;
-    border: 1px solid purple;    
-    flex-direction: row;
-    justify-content: space-evenly;
-    align-items: center;
+#gameTable {
+  grid-area: gTableBox;
+  display: flex;
+  border: 1px solid purple;    
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
   }
 
-  #creditTotal {
-    grid-area: cTotalBox;
-    background-color: #DFC63A;
+#creditTotal {
+  grid-area: cTotalBox;
+  background-color: #DFC63A;
+  font-size: 75px;
+  text-align: center;
+  padding: 10px;
   }
 
-  #newGameButton {
-    grid-area: nGameButton;
-    background-color: white;
+#newGameButton {
+  grid-area: nGameButton;
+  background-color: white;
   }
 
-  #betButton {
-    grid-area: bButton;
-    background-color: white;
+#betButton {
+  grid-area: bButton;
+  background-color: white;
   }
 
-  #plusButton, #minusButton {
-    background-color: #0B5106;
+#totalBet {
+  font-size: xx-large;
+}
+
+#plusButton, #minusButton {
+  background-color: #0B5106;
   }
 
-  #dealButton {
-    grid-area: dealButton;
-    background-color: #D20915;
+#dealButton {
+  grid-area: dealButton;
+  background-color: #D20915;
   }
 
-  #drawButton {
-    grid-area: drawButton;
-    background-color: #D20915;
+#drawButton {
+  grid-area: drawButton;
+  background-color: #D20915;
   }
 
-  h1, h2, h3 {
-    color: white;
-    text-align: center;
-    /* border: 1px solid purple; */
+h1, h2, h3 {
+  color: white;
+  text-align: center;
+  /* border: 1px solid purple; */
   }
 
-  h6 {
-    color: white;
-    font-size: xx-large;
-    background:#0B5106;
-    text-align: left;
-    margin: 25% 0;
-    padding: 25%;
+h6 {
+  margin: 0;
   }
 
-  ul {
-    list-style: none;
+.holdcard {
+  opacity: 0.5;
+}
+
+ul {
+  list-style: none;
   }
+
+li {
+  font-size: xx-large;
+}
