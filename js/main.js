@@ -1,5 +1,4 @@
-console.log('Figjam!')
-console.log('Fix - cards to 52, fix init, betting, sorting the handranks and unclicking')
+console.log('Fix - cards to 52, fix init, switch between deal/draw betting, unclicking, add wiiingint pot to creditotal')
 /*----- constants -----*/
 const numOfCards = 5; // the number of cards on the board
 const suit = ['♠', '♣', '♦', '♥'];
@@ -124,7 +123,34 @@ function play() { // resetting els except moneyPot & betPot
 function whatIsMyBet(betTotal, myBet) {// moneyPot var
   coinEl.innerText = `You have ${betTotal} coins`;
   betEl.innerText = `${myBet} coin`;
-}
+
+  // function getOdds() {
+    let newList = document.createElement('ul'); // creates a <ul> element
+    newList.id = 'pOddsHands'; // sets the ID of the <ul> element
+    payoutEls.appendChild(newList); // appends the <ul> element to the 'payoutEls' element
+    
+    for (let i = 0; i < 9; i++) {
+      let newListEls = document.createElement('li'); // creates a <li> element
+      newListEls.id = i; // sets the ID of the <li> element
+      // need to sort the other way
+      newListEls.innerText = handRanks[i].hand + " " + handRanks[i].pOdds;
+      newList.appendChild(newListEls); // appends the <li> element to the <ul> element
+    }
+  
+    let newListPlayer = document.createElement('ul'); // creates a <ul> element
+    newListPlayer.id = 'playerOddsHands'; // sets the ID of the <ul> element
+    payoutPlayerEls.appendChild(newListPlayer); // appends the <ul> element to the 'payoutPlayerEls' element
+    
+    for (let i = 0; i < 9; i++) {
+      let newListPlayerEls = document.createElement('li'); // creates a <li> element
+      newListPlayerEls.id = i; // sets the ID of the <li> element
+      // need to sort the other way
+      newListPlayerEls.innerText = (handRanks[i].pOdds * betPot);
+      newListPlayer.appendChild(newListPlayerEls); // appends the <li> element to the <ul> element
+    }
+  }
+
+// }
 
 function addMoney() {
   moneyPot--;
@@ -136,22 +162,6 @@ function minusMoney() {
   moneyPot++;
   betPot--;
   whatIsMyBet(moneyPot, betPot); 
-}
-
-function getPlayerOdds() {
-  let newList = document.createElement('ul'); // creates a <ul> element
-  newList.id = 'pOddsHands'; // sets the ID of the <ul> element
-  payoutEls.appendChild(newList); // appends the <ul> element to the 'payoutEls' element
-  
-  for (let i = 0; i < 11; i++) {
-    let newListEls = document.createElement('li'); // creates a <li> element
-    newListEls.id = i; // sets the ID of the <li> element
-    // need to sort the other way
-    newListEls.innerText = `${handRanks[i].hand}     ${handRanks[i].pOdds}`;
-    newList.appendChild(newListEls); // appends the <li> element to the <ul> element
-  }
-
-
 }
 
 /*-----cards -----*/
@@ -272,6 +282,8 @@ function getWinnerOutcome(arr) {
   if (isGameFinished) {
     if(isWinningHand) { // msg in the msg box based on outcome of game logic
       statusEl.innerHTML = "<h2>You win!</h2><h2>The type of win goes here</h2>";
+      moneyPot += handRanks[9].pOdds; // how do i get it dynamically?
+      console.log(moneyPot);
     } else {
       statusEl.innerHTML = "<h2>Better luck next time!</h2>";
     }
@@ -290,7 +302,6 @@ function init() { // responsible for initializing the state
   //where can I put this so it doesn't get reset every new game
   moneyPot = 100; // sets the initial credit total
   betPot = 0; // set the initial bet count to 0
-  getPlayerOdds();
   whatIsMyBet(moneyPot, betPot);
   payoutEls.innerHTML = ''; // clear the payOut table
   payoutPlayerEls.innerHTML = ''; // clears the game table
