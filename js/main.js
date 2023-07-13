@@ -1,4 +1,4 @@
-console.log('Fix - cards to 52, fix init, switch between deal/draw betting, unclicking, add winningpot to creditotal')
+console.log('Fix - cards to 52, fix init, switch between deal/draw betting, unclicking')
 /*----- constants -----*/
 const numOfCards = 5; // the number of cards on the board
 const suit = ['♠', '♣', '♦', '♥'];
@@ -8,55 +8,46 @@ const handRanks = [ // this is now an array NOT OBJECT FIX GAME
     hand: "Royal Flush",
     count: 5, // "A, K, Q, J, 10 of the same suit"
     pOdds: 250,
-    priority: 9,
   },
   {
     hand: "Straight Flush",
     count: 5, // "Five consecutive cards of the same suit"
     pOdds: 50,
-    priority: 8,
   },
   {
     hand: "Four of a Kind",
     count: 4, // Based on playerRankObject
     pOdds: 40,
-    priority: 7,
   },
   {
     hand: "Full House",
     count: 0, // "Three of one rank and two of another rank"
     pOdds: 10,
-    priority: 6,
   },
   {
     hand: "Flush",
     count: 5, // Based on playerSuitObject
     pOdds: 7,
-    priority: 5,
   },
   {
     hand: "Straight",
     count: 5, // TO FIX "5 relates to suit
     pOdds: 5,
-    priority: 4,
   },
   {
     hand: "Three of a Kind",
     count: 3, // Based on playerRankObject
     pOdds: 3,
-    priority: 3,
   },
   {
     hand: "Two Pair", 
     count: 2, // Based on playerRankObject
     pOdds: 2,
-    priority: 2,
   },
   {
     hand: "Jacks or Better",  
     count: 2, // Based on playerRankObject
     pOdds: 1,
-    priority: 1,
   },
 ];
 
@@ -92,58 +83,37 @@ document.getElementById('plusButton').addEventListener('click', addMoney); // Ad
 document.getElementById('minusButton').addEventListener('click', minusMoney); // Minus
 
 /*----- functions -----*/
+/*----- Payout table set up -----*/
+function getOdds() { 
+  newList = document.createElement('ul'); // creates the Payout table
+  newList.id = 'pOddsHands'; 
+  payoutEls.appendChild(newList); 
+  
+  for (let i = 0; i < 9; i++) {
+    newListEls = document.createElement('li'); 
+    newListEls.id = i; 
+    newListEls.innerText = handRanks[i].hand + " " + handRanks[i].pOdds;
+    newList.appendChild(newListEls); 
+  }
+ 
+  newListPlayer = document.createElement('ul'); // creates the Player's Payout table
+  newListPlayer.id = 'playerOddsHands';
+  payoutPlayerEls.appendChild(newListPlayer); 
+  
+  for (let i = 0; i < 9; i++) {
+    newListPlayerEls = document.createElement('li'); 
+    newListPlayerEls.id = i; 
+    newListPlayerEls.innerText = (handRanks[i].pOdds * betPot);
+    newListPlayer.appendChild(newListPlayerEls); 
+  }
+}
 
-
-/*----- Game flow -----*/
-function play() { // resetting els except moneyPot & betPot
-  boardEl.innerHTML = ''; // clears the game table
-  statusEl.innerHTML = ''; // clears the msg box
-  isWinningHand = false; // set the card back to 'in play'
-  isGameFinished = false; // sets the game back to 'in play'
-  playerHandArray = []; // clears the [♠A, ..] array that will be used for winning logic
-  playerSuitObject = {}; // clears the {♠, ..}  that will be used for winning logic
-  playerRankObject = {};// clears the {A, ..}  that will be used for winning logic  whatIsMyBet(moneyPot, betPot); 
-   // adds 5 'backs' of cards to the Games table
-  for (let i=0; i < numOfCards; i++) {
-    let newDiv = document.createElement('div'); // adds a <div> to hold the card 
-    newDiv.classList.add('card', 'back', 'xlarge'); // the back of 5 cards 
-    boardEl.appendChild(newDiv); // appends to Games Table
-    newDiv.id = i;
-   } 
- }
-
-/*-----Betting logic -----*/
-function whatIsMyBet(betTotal, myBet) {// moneyPot var
+/*----- Wager render eg coins and updates odds on player payout table -----*/
+function whatIsMyBet(betTotal, myBet) { // updates the total coins, the bet total and the player payout table
   coinEl.innerText = `You have ${betTotal} coins`;
   betEl.innerText = `${myBet} coin`;
-
-  // function getOdds() {
-    let newList = document.createElement('ul'); // creates a <ul> element
-    newList.id = 'pOddsHands'; // sets the ID of the <ul> element
-    payoutEls.appendChild(newList); // appends the <ul> element to the 'payoutEls' element
-    
-    for (let i = 0; i < 9; i++) {
-      let newListEls = document.createElement('li'); // creates a <li> element
-      newListEls.id = i; // sets the ID of the <li> element
-      // need to sort the other way
-      newListEls.innerText = handRanks[i].hand + " " + handRanks[i].pOdds;
-      newList.appendChild(newListEls); // appends the <li> element to the <ul> element
-    }
-  
-    let newListPlayer = document.createElement('ul'); // creates a <ul> element
-    newListPlayer.id = 'playerOddsHands'; // sets the ID of the <ul> element
-    payoutPlayerEls.appendChild(newListPlayer); // appends the <ul> element to the 'payoutPlayerEls' element
-    
-    for (let i = 0; i < 9; i++) {
-      let newListPlayerEls = document.createElement('li'); // creates a <li> element
-      newListPlayerEls.id = i; // sets the ID of the <li> element
-      // need to sort the other way
-      newListPlayerEls.innerText = (handRanks[i].pOdds * betPot);
-      newListPlayer.appendChild(newListPlayerEls); // appends the <li> element to the <ul> element
-    }
+  updateOdds();
   }
-
-// }
 
 function addMoney() {
   moneyPot--;
@@ -157,13 +127,47 @@ function minusMoney() {
   whatIsMyBet(moneyPot, betPot); 
 }
 
-/*-----cards -----*/
+function updateOdds() {
+  const payoutPlayerUL = document.getElementById('playerOddsHands'); 
+  const createdPlayerEl = payoutPlayerUL.querySelectorAll('li');
+
+  for (let i = 0; i < 9; i++) { // if the lists exist update with the odds
+  console.log(payoutPlayerEls);
+    createdPlayerEl[i].innerText = (handRanks[i].pOdds * betPot);
+    }
+}
+
+/*-----Rnd cards -----*/
 function rndCard() { // creates a single random card
   rndSuitIdx = Math.floor(Math.random() * suit.length);
   rndRankIdx = Math.floor(Math.random() * rank.length);
   const card = suit[rndSuitIdx] + rank[rndRankIdx]; // card string eg♠A
   return card;
 }
+
+/*----- Game flow -----*/
+function play() { // resetting els except moneyPot & betPot
+  boardEl.innerHTML = ''; // clears the game table
+  statusEl.innerHTML = '<h2>Ready to play?</h2><h2>Hit deal</h2>'; // clears the msg box
+  isWinningHand = false; // set the card back to 'in play'
+  isGameFinished = false; // sets the game back to 'in play'
+  playerHandArray = []; // clears the [♠A, ..] array that will be used for winning logic
+  playerSuitObject = {}; // clears the {♠, ..}  that will be used for winning logic
+  playerRankObject = {};// clears the {A, ..}  that will be used for winning logic  whatIsMyBet(moneyPot, betPot); 
+  // console.log(payoutEls);
+  // console.log(payoutPlayerEls);
+  // console.log(playerHandArray);
+  // console.log(playerSuitObject);
+  // console.log(playerRankObject);
+
+  // adds 5 'backs' of cards to the Games table
+  for (let i=0; i < numOfCards; i++) {
+    let newDiv = document.createElement('div'); // adds a <div> to hold the card 
+    newDiv.classList.add('card', 'back', 'xlarge'); // the back of 5 cards 
+    boardEl.appendChild(newDiv); // appends to Games Table
+    newDiv.id = i;
+   } 
+ }
 
 function deal() { // deals the player's first add
   const cardEls = boardEl.querySelectorAll('.card'); // card divs
@@ -299,26 +303,32 @@ function getWinnerOutcome(arr) {
       isWinningHand = true;
       statusEl.innerHTML = "<h2>You win!</h2><h2>Royal Flush</h2><h2>What a win!</h2>";
       moneyPot += handRanks[0].pOdds;
+      coinEl.innerText = `You have ${moneyPot} coins`;
       } else if (isFourPair) {
         isWinningHand = true;
         statusEl.innerHTML = "<h2>You win!</h2><h2>Four of a Kind/h2><h2>Whoozer!</h2>";
         moneyPot += handRanks[2].pOdds;
+        coinEl.innerText = `You have ${moneyPot} coins`;
       } else if (isFlush) {
         isWinningHand = true;
         statusEl.innerHTML = "<h2>You win!</h2><h2>A Flush</h2><h2>Great hand!</h2>";
         moneyPot += handRanks[4].pOdds;
+        coinEl.innerText = `You have ${moneyPot} coins`;
       } else if (isThreePair) {
         isWinningHand = true;
         statusEl.innerHTML = "<h2>You win!</h2><h2>Three of a Kind</h2><h2>Not bad - enjoy those coins!</h2>";
         moneyPot += handRanks[6].pOdds;
+        coinEl.innerText = `You have ${moneyPot} coins`;
       } else if (isTwoPair) {
         isWinningHand = true;
         statusEl.innerHTML = "<h2>You win!</h2><h2>Two Pair</h2><h2>Could be worse!</h2>";
         moneyPot += handRanks[7].pOdds;
+        coinEl.innerText = `You have ${moneyPot} coins`;
       } else if (isJacksOrBetter) {
         isWinningHand = true;
         statusEl.innerHTML = "<h2>You win!</h2><h2>Jacks or Better</h2><h2>Least you gained a coin</h2>";
         moneyPot += handRanks[7].pOdds;
+        coinEl.innerText = `You have ${moneyPot} coins`;
       } else {
         statusEl.innerHTML = "<h2>Better luck next time!</h2>";
       }
@@ -333,7 +343,10 @@ function getWinnerOutcome(arr) {
 init();
 
 function render() {  // responsible for rendering all state to the dom
+  getOdds() // sets up both payout tables
   play(); // 5 upside cards
+  coinEl.innerText = `You have ${moneyPot} coins`;
+  betEl.innerText = `${betPot} coin`;
 }
 
 function init() { // responsible for initializing the state
@@ -341,15 +354,7 @@ function init() { // responsible for initializing the state
   //where can I put this so it doesn't get reset every new game
   moneyPot = 100; // sets the initial credit total
   betPot = 0; // set the initial bet count to 0
-  whatIsMyBet(moneyPot, betPot);
-  payoutEls.innerHTML = ''; // clear the payOut table
-  payoutPlayerEls.innerHTML = ''; // clears the game table
-  boardEl.innerHTML = ''; // clears the game table
-  statusEl.innerHTML = ''; // clears the msg box
-  isWinningHand = false; // set the card back to 'in play'
-  isGameFinished = false; // sets the game back to 'in play'
-  playerHandArray = []; // clears the [♠A, ..] array that will be used for winning logic
-  playerSuitObject = {}; // clears the {♠: 1, ..}  that will be used for winning logic
-  playerRankObject = {};// clears the {A:1 , .. }  that will be used for winning logic  whatIsMyBet(moneyPot, betPot); 
-  render();
+
+  
+  render(); 
 };
