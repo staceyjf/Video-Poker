@@ -1,4 +1,4 @@
-console.log('Fix - cards to 52, fix init, switch between deal/draw betting, unclicking')
+console.log('Fix - cards to 52, switch between deal/draw betting, unclicking')
 /*----- constants -----*/
 const numOfCards = 5; // the number of cards on the board
 const suit = ['♠', '♣', '♦', '♥'];
@@ -54,6 +54,7 @@ const handRanks = [ // this is now an array NOT OBJECT FIX GAME
 /*----- app's state (variables) -----*/
 let isWinningHand;
 let isGameFinished;
+let winningCoins
 
 // TO DO: check if i need all three
 let holdCounter; // count the number of cards that are held
@@ -110,9 +111,9 @@ function getOdds() {
 
 /*----- Wager render eg coins and updates odds on player payout table -----*/
 function whatIsMyBet(betTotal, myBet) { // updates the total coins, the bet total and the player payout table
+  updateOdds();
   coinEl.innerText = `You have ${betTotal} coins`;
   betEl.innerText = `${myBet} coin`;
-  updateOdds();
   }
 
 function addMoney() {
@@ -131,10 +132,13 @@ function updateOdds() {
   const payoutPlayerUL = document.getElementById('playerOddsHands'); 
   const createdPlayerEl = payoutPlayerUL.querySelectorAll('li');
 
+  winningCoins = [];
+
   for (let i = 0; i < 9; i++) { // if the lists exist update with the odds
-  console.log(payoutPlayerEls);
-    createdPlayerEl[i].innerText = (handRanks[i].pOdds * betPot);
-    }
+    createdPlayerEl[i].innerText = handRanks[i].pOdds * betPot;
+    winningCoins.push(createdPlayerEl[i].innerText);
+    } 
+    console.log(winningCoins);
 }
 
 /*-----Rnd cards -----*/
@@ -209,7 +213,7 @@ function draw() {// let's the player swop cards and then ends the game
   }))
 
   // console.log("inside draw()");
-  console.log(playerHandArray);
+  // console.log(playerHandArray);
 
   getWinnerOutcome(playerHandArray); // its time to check if there was a winner
 }
@@ -238,12 +242,9 @@ function getWinnerOutcome(arr) {
   return acc;
   }, {});
 
-  console.log(playerSuitObject);
-  console.log(playerRankObject);
-
   let isRoyalFlush = false;
-  let isFlush = false;
   let isFourPair = false;
+  let isFlush = false;
   let isThreePair = false;
   let isTwoPair = false;
   let isJacksOrBetter = false;
@@ -296,47 +297,56 @@ function getWinnerOutcome(arr) {
   }
   
   isGameFinished = true;
-  
+  console.log(moneyPot);
+
   // Check winning conditions in a specific order
   if (isGameFinished){
     if (isRoyalFlush) {
-      isWinningHand = true;
-      statusEl.innerHTML = "<h2>You win!</h2><h2>Royal Flush</h2><h2>What a win!</h2>";
-      moneyPot += handRanks[0].pOdds;
-      coinEl.innerText = `You have ${moneyPot} coins`;
+        isWinningHand = true;
+        statusEl.innerHTML = "<h2>You win!</h2><h2>Royal Flush</h2><h2>What a win!</h2>";
+        moneyPot += Number(winningCoins[0]);
+        coinEl.innerText = `You have ${moneyPot} coins`;
       } else if (isFourPair) {
         isWinningHand = true;
-        statusEl.innerHTML = "<h2>You win!</h2><h2>Four of a Kind/h2><h2>Whoozer!</h2>";
-        moneyPot += handRanks[2].pOdds;
+        statusEl.innerHTML = "<h2>You win!</h2><h2>A Flush</h2><h2>Great hand!</h2>";
+        moneyPot += Number(winningCoins[2]);
         coinEl.innerText = `You have ${moneyPot} coins`;
       } else if (isFlush) {
         isWinningHand = true;
-        statusEl.innerHTML = "<h2>You win!</h2><h2>A Flush</h2><h2>Great hand!</h2>";
-        moneyPot += handRanks[4].pOdds;
+        statusEl.innerHTML = "<h2>You win!</h2><h2>Four of a Kind/h2><h2>Whoozer!</h2>";
+        moneyPot += Number(winningCoins[4]);
         coinEl.innerText = `You have ${moneyPot} coins`;
       } else if (isThreePair) {
         isWinningHand = true;
         statusEl.innerHTML = "<h2>You win!</h2><h2>Three of a Kind</h2><h2>Not bad - enjoy those coins!</h2>";
-        moneyPot += handRanks[6].pOdds;
+        moneyPot += Number(winningCoins[6]);
         coinEl.innerText = `You have ${moneyPot} coins`;
+        console.log(moneyPot);
+        console.log(winningCoins[6]);
       } else if (isTwoPair) {
         isWinningHand = true;
         statusEl.innerHTML = "<h2>You win!</h2><h2>Two Pair</h2><h2>Could be worse!</h2>";
-        moneyPot += handRanks[7].pOdds;
+        moneyPot += Number(winningCoins[7]);
+        console.log(moneyPot);
+        console.log(winningCoins[7]);
         coinEl.innerText = `You have ${moneyPot} coins`;
       } else if (isJacksOrBetter) {
         isWinningHand = true;
         statusEl.innerHTML = "<h2>You win!</h2><h2>Jacks or Better</h2><h2>Least you gained a coin</h2>";
-        moneyPot += handRanks[7].pOdds;
+        moneyPot += Number(winningCoins[8]);
         coinEl.innerText = `You have ${moneyPot} coins`;
       } else {
         statusEl.innerHTML = "<h2>Better luck next time!</h2>";
       }
   }
+
+  setTimeout(function() {
+    statusEl.innerHTML = "<h2>Ready for a new game - HIT NEW GAME BTN</h2>";
+  }, 10000);
   
-  // if(isWinningHand) { 
-  //   play(); // check this
-  // } 
+  setTimeout(function() {
+    play();
+  }, 20000);
 }
 
 /*----- other -----*/
@@ -354,7 +364,5 @@ function init() { // responsible for initializing the state
   //where can I put this so it doesn't get reset every new game
   moneyPot = 100; // sets the initial credit total
   betPot = 0; // set the initial bet count to 0
-
-  
   render(); 
-};
+}
