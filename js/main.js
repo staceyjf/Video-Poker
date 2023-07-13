@@ -1,15 +1,9 @@
-console.log('Fix - cards to 52, fix init, switch between deal/draw betting, unclicking, add wiiingint pot to creditotal')
+console.log('Fix - cards to 52, fix init, switch between deal/draw betting, unclicking, add winningpot to creditotal')
 /*----- constants -----*/
 const numOfCards = 5; // the number of cards on the board
 const suit = ['♠', '♣', '♦', '♥'];
 const rank = ['02', '03', '04', '05', '06', '07', '08', '09', '10', 'J', 'Q', 'K', 'A'];
 const handRanks = [ // this is now an array NOT OBJECT FIX GAME
-  {
-    hand: "PAYOUT TABLE", 
-    count: 0,
-    pOdds: " xBET",
-    priority: 0,
-  },  
   {
     hand: "Royal Flush",
     count: 5, // "A, K, Q, J, 10 of the same suit"
@@ -24,7 +18,7 @@ const handRanks = [ // this is now an array NOT OBJECT FIX GAME
   },
   {
     hand: "Four of a Kind",
-    count: 4, // Based on playerRankArray
+    count: 4, // Based on playerRankObject
     pOdds: 40,
     priority: 7,
   },
@@ -36,7 +30,7 @@ const handRanks = [ // this is now an array NOT OBJECT FIX GAME
   },
   {
     hand: "Flush",
-    count: 5, // Based on playerSuitArray
+    count: 5, // Based on playerSuitObject
     pOdds: 7,
     priority: 5,
   },
@@ -48,19 +42,19 @@ const handRanks = [ // this is now an array NOT OBJECT FIX GAME
   },
   {
     hand: "Three of a Kind",
-    count: 3, // Based on playerRankArray
+    count: 3, // Based on playerRankObject
     pOdds: 3,
     priority: 3,
   },
   {
     hand: "Two Pair", 
-    count: 2, // Based on playerRankArray
+    count: 2, // Based on playerRankObject
     pOdds: 2,
     priority: 2,
   },
   {
     hand: "Jacks or Better",  
-    count: 2, // Based on playerRankArray
+    count: 2, // Based on playerRankObject
     pOdds: 1,
     priority: 1,
   },
@@ -75,8 +69,8 @@ let holdCounter; // count the number of cards that are held
 let moneyPot;
 let betPot;
 let playerHandArray; // eg [♠A, ..] used to evaluate game logic
-let playerSuitArray; // eg [♠, ..] used to evaluate game logic
-let playerRankArray; // eg [A, ..] used to evaluate game logic
+let playerSuitObject; // eg {♠: 1, ..} used to evaluate game logic
+let playerRankObject; // eg {A: 2, ..} used to evaluate game logic
 
 /*----- cached element references -----*/
 const boardEl = document.getElementById('gameTable'); // the board
@@ -106,10 +100,9 @@ function play() { // resetting els except moneyPot & betPot
   statusEl.innerHTML = ''; // clears the msg box
   isWinningHand = false; // set the card back to 'in play'
   isGameFinished = false; // sets the game back to 'in play'
-  handEvaluator = {}; // clears the winning logic counter
   playerHandArray = []; // clears the [♠A, ..] array that will be used for winning logic
-  playerSuitArray = []; // clears the [♠, ..] array that will be used for winning logic
-  playerRankArray = [];// clears the [A, ..] array that will be used for winning logic  whatIsMyBet(moneyPot, betPot); 
+  playerSuitObject = {}; // clears the {♠, ..}  that will be used for winning logic
+  playerRankObject = {};// clears the {A, ..}  that will be used for winning logic  whatIsMyBet(moneyPot, betPot); 
    // adds 5 'backs' of cards to the Games table
   for (let i=0; i < numOfCards; i++) {
     let newDiv = document.createElement('div'); // adds a <div> to hold the card 
@@ -212,7 +205,7 @@ function draw() {// let's the player swop cards and then ends the game
   }))
 
   // console.log("inside draw()");
-  // console.log(playerHandArray);
+  console.log(playerHandArray);
 
   getWinnerOutcome(playerHandArray); // its time to check if there was a winner
 }
@@ -221,16 +214,14 @@ function draw() {// let's the player swop cards and then ends the game
 function getWinnerOutcome(arr) { 
   
   // Count of the suit
-  playerSuitArray = arr.reduce(function(acc, curr) { // creates the object counter
+  playerSuitObject = arr.reduce(function(acc, curr) { // creates the object counter
     let currSuit = curr.split("")[0]; 
     acc[currSuit] = acc[currSuit] ? acc[currSuit] +1 : 1
     return acc
   }, {})
 
-  console.log(playerSuitArray);
-
   // Count of Rank
-  let playerRankArray = arr.reduce(function (acc, curr) {
+  let playerRankObject = arr.reduce(function (acc, curr) {
 	const myDict = { J: 11, Q: 12, K: 13, A: 14 }; 
   // Giving these numerical values / other cards rep by two digits eg 08, 09, 10
 	let currCardValue = curr.split("").slice(1).join(""); // ranks
@@ -243,51 +234,99 @@ function getWinnerOutcome(arr) {
   return acc;
   }, {});
 
-  console.log(playerRankArray);
+  console.log(playerSuitObject);
+  console.log(playerRankObject);
+
+  let isRoyalFlush = false;
+  let isFlush = false;
+  let isFourPair = false;
+  let isThreePair = false;
+  let isTwoPair = false;
+  let isJacksOrBetter = false;
 
   // matches the outcome of the counter to game logic eg handRanks object
   // HOW DO I MAKE THEM WAIT BEFORE PROCEEDING
+   // game logic for matching 5 suits & suits above Jacks eg Royal Flush
+  for (let key in playerSuitObject) {
+    if (playerSuitObject[key] >= handRanks[0].count) {// if count is 5 means they are all of the same suit
+      for (let rankKey in playerRankObject) {
+        if (rankKey > 10) { //implies that the card is Jack +
+          isRoyalFlush = true;
+          break;
+        }
+      }
+    }
+  }
 
-  
-  // game logic for matching 5 suits
-  for (let key in playerSuitArray) { 
-    if (playerSuitArray[key] === handRanks[5].count) {
-      isWinningHand = true;
+  // game logic for matching 5 suits eg Flush
+  for (let key in playerSuitObject) { 
+    if (playerSuitObject[key] === handRanks[4].count) {
+      isFlush = true;
       break;
     } 
   }
-  // game logic for matching 2/3/5 ranks
-  for (let key in playerRankArray) { 
-    if (playerRankArray[key] === handRanks[3].count ||
-      playerRankArray[key] === handRanks[7].count ||
-      playerRankArray[key] === handRanks[8].count) {
-        isWinningHand = true;
-        break;
-    } 
+
+  // game logic for matching 2/3/4 ranks
+  for (let key in playerRankObject) {
+    if (playerRankObject[key] === handRanks[2].count) {
+      isFourPair = true;
+      break;
+    } else if (playerRankObject[key] === handRanks[6].count) {
+      isThreePair = true;
+      break;
+    } else if (playerRankObject[key] === handRanks[7].count) {
+      isTwoPair = true;
+      break;
+    }
   }
 
   // Check for "Jacks or Better" win
-  for (let key in playerRankArray) {
-    if ((playerRankArray[11] >= handRanks[9].count) ||
-        (playerRankArray[12] >= handRanks[9].count) ||
-        (playerRankArray[13] >= handRanks[9].count) ||
-        (playerRankArray[14] >= handRanks[9].count)) {
-          isWinningHand = true;
+  for (let key in playerRankObject) {
+    if ((playerRankObject[11] >= handRanks[8].count) ||
+        (playerRankObject[12] >= handRanks[8].count) ||
+        (playerRankObject[13] >= handRanks[8].count) ||
+        (playerRankObject[14] >= handRanks[8].count)) {
+          isJacksOrBetter = true;
           break;
     }
   }
   
   isGameFinished = true;
   
-  if (isGameFinished) {
-    if(isWinningHand) { // msg in the msg box based on outcome of game logic
-      statusEl.innerHTML = "<h2>You win!</h2><h2>The type of win goes here</h2>";
-      moneyPot += handRanks[9].pOdds; // how do i get it dynamically?
-      console.log(moneyPot);
-    } else {
-      statusEl.innerHTML = "<h2>Better luck next time!</h2>";
-    }
+  // Check winning conditions in a specific order
+  if (isGameFinished){
+    if (isRoyalFlush) {
+      isWinningHand = true;
+      statusEl.innerHTML = "<h2>You win!</h2><h2>Royal Flush</h2><h2>What a win!</h2>";
+      moneyPot += handRanks[0].pOdds;
+      } else if (isFourPair) {
+        isWinningHand = true;
+        statusEl.innerHTML = "<h2>You win!</h2><h2>Four of a Kind/h2><h2>Whoozer!</h2>";
+        moneyPot += handRanks[2].pOdds;
+      } else if (isFlush) {
+        isWinningHand = true;
+        statusEl.innerHTML = "<h2>You win!</h2><h2>A Flush</h2><h2>Great hand!</h2>";
+        moneyPot += handRanks[4].pOdds;
+      } else if (isThreePair) {
+        isWinningHand = true;
+        statusEl.innerHTML = "<h2>You win!</h2><h2>Three of a Kind</h2><h2>Not bad - enjoy those coins!</h2>";
+        moneyPot += handRanks[6].pOdds;
+      } else if (isTwoPair) {
+        isWinningHand = true;
+        statusEl.innerHTML = "<h2>You win!</h2><h2>Two Pair</h2><h2>Could be worse!</h2>";
+        moneyPot += handRanks[7].pOdds;
+      } else if (isJacksOrBetter) {
+        isWinningHand = true;
+        statusEl.innerHTML = "<h2>You win!</h2><h2>Jacks or Better</h2><h2>Least you gained a coin</h2>";
+        moneyPot += handRanks[7].pOdds;
+      } else {
+        statusEl.innerHTML = "<h2>Better luck next time!</h2>";
+      }
   }
+  
+  // if(isWinningHand) { 
+  //   play(); // check this
+  // } 
 }
 
 /*----- other -----*/
@@ -309,9 +348,8 @@ function init() { // responsible for initializing the state
   statusEl.innerHTML = ''; // clears the msg box
   isWinningHand = false; // set the card back to 'in play'
   isGameFinished = false; // sets the game back to 'in play'
-  handEvaluator = {}; // clears the winning logic counter
   playerHandArray = []; // clears the [♠A, ..] array that will be used for winning logic
-  playerSuitArray = []; // clears the [♠, ..] array that will be used for winning logic
-  playerRankArray = [];// clears the [A, ..] array that will be used for winning logic  whatIsMyBet(moneyPot, betPot); 
+  playerSuitObject = {}; // clears the {♠: 1, ..}  that will be used for winning logic
+  playerRankObject = {};// clears the {A:1 , .. }  that will be used for winning logic  whatIsMyBet(moneyPot, betPot); 
   render();
 };
