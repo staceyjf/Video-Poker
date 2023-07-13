@@ -7,12 +7,16 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/card-library/css/cardstarter.min.css"> <!--Card Deck -->
     <link rel="icon" type="image/x-icon" href="/imgs/random.png">  <!--change this favicon -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&display=swap" rel="stylesheet">
     <script defer src="js/main.js"></script>
 
 
 </head>
 <body>
     <main>
+        <div class="red"></div>
         <div class="container">
         <!-- GET HELP ON THIS TWO TONE BACKGROUND -->
             <div class="introbox"><h1>VIDEO POKER</h1></div>
@@ -39,8 +43,7 @@
                 <div id="totalBet"></div>
                 <button id="plusButton">+</button>
             </div>
-            <button id="dealButton">DEAL</button>
-            <button id="drawButton">DRAW</button>
+            <button id="dealButton" onclick="replaceButton()">DEAL</button>
 
             </div>
         </div>

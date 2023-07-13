@@ -70,8 +70,7 @@ const statusEl = document.getElementById('gameStatus'); // the msg box
 const payoutEls = document.getElementById('payoutOdds'); // the msg box
 const payoutPlayerEls = document.getElementById('payoutPlayer'); // the msg box
 const coinEl = document.getElementById('creditTotal'); // player's available coin
-const betEl = document.getElementById('totalBet');
-const bettingEl = document.getElementById('totalBet'); // betting total
+const betEl = document.getElementById('totalBet');// betting total
 
 /*----- event listeners -----*/
 // TO DO: check all the functions here
@@ -79,7 +78,6 @@ document.getElementById('resetButton').addEventListener('click', init); // New P
 document.getElementById('newGameButton').addEventListener('click', play); // New Game
 document.getElementById('dealButton').addEventListener('click', deal); // 1st hand
 document.getElementById('gameTable').addEventListener('click', hold); // hold cards
-document.getElementById('drawButton').addEventListener('click', draw); // Final hand
 document.getElementById('plusButton').addEventListener('click', addMoney); // Add
 document.getElementById('minusButton').addEventListener('click', minusMoney); // Minus
 
@@ -107,6 +105,21 @@ function getOdds() {
     newListPlayerEls.innerText = (handRanks[i].pOdds * betPot);
     newListPlayer.appendChild(newListPlayerEls); 
   }
+}
+
+function replaceButton() {
+  // Create Draw Btn
+  const drawBtn = document.createElement('button');
+  drawBtn.id = 'drawButton'
+  drawBtn.textContent = 'DRAW';
+
+  const dealBtn = document.getElementById('dealButton');
+
+  // As they share the same container 
+  dealBtn.parentNode.replaceChild(drawBtn, dealBtn);
+  document.querySelector('.container').style.gridTemplateAreas = '"hdr hdr hdr hdr hdr" "pOddsBox pOddsBox pPlayerBox gStatusBox gStatusBox" "gTableBox gTableBox gTableBox gTableBox gTableBox" "cTotalBox cTotalBox cTotalBox cTotalBox cTotalBox" ". nGameButton bButton drawButton rButton"'
+
+  document.getElementById('drawButton').addEventListener('click', draw); // Final hand
 }
 
 /*----- Wager render eg coins and updates odds on player payout table -----*/
@@ -148,6 +161,8 @@ function rndCard() { // creates a single random card
   const card = suit[rndSuitIdx] + rank[rndRankIdx]; // card string eg♠A
   return card;
 }
+
+
 
 /*----- Game flow -----*/
 function play() { // resetting els except moneyPot & betPot
