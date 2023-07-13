@@ -55,7 +55,6 @@ const handRanks = [
 /*----- app's state (variables) -----*/
 let isGameFinished;
 let winningCoins
-// let holdCounter; // count the number of cards that are held
 let moneyPot;
 let betPot;
 let playerHandArray; // eg [♠A, ..] used to evaluate game logic
@@ -198,8 +197,6 @@ function deal() { // deals the player's first hand
   // console.log(event);
   // console.log(event.target);
   // console.log(event.target.childNodes[0]); 
-  
-  // holdCounter--;
  }
 
 function draw() {// let's the player swop cards and then ends the game
@@ -337,7 +334,7 @@ function getWinnerOutcome(arr) {
   }
 
   setTimeout(function() {
-    statusEl.innerHTML = "<h2>Ready for a new game - HIT NEW GAME BTN</h2>";
+    statusEl.innerHTML = "<h2>Ready for a new game <br> HIT the NEW GAME BTN</h2>";
   }, 10000);
   
 }
@@ -353,7 +350,6 @@ function render() {  // responsible for rendering all state to the dom
 }
 
 function init() { // responsible for initializing the state
-  // holdCounter = 5;
   payoutEls.innerText = ''; // clears the paytable
   payoutPlayerEls.innerText = ''; // clears the player's payout table
   moneyPot = 100; // sets the initial credit total
