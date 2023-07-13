@@ -12,6 +12,7 @@
 
 ##### Stacey Fanner
 
+
 Experience the thrill of video poker right from the comfort of your own device, just like in the lively casinos of Atlantic City or Las Vegas. Place your bets, wager your coins, and embark on an exhilarating journey to chase that coveted Royal Flush, where massive winnings await!
 
 ## Description
@@ -24,8 +25,6 @@ Welcome to Video Poker! This exciting game combines elements of poker and slot m
 </div>
 
 <div align="left">
-
-<br>
 
 ## Technologies Used
 
@@ -48,6 +47,26 @@ To try out the game, simply follow the link below:
 
 When the page loads, you will encounter the following features:
 
+1. Initial Game Setup:
+    - All five cards will be facing down.
+    - The Winning Hands and Payouts will be displayed at the top of the page.
+    - The player's available credit will be shown.
+2. Placing Bets:
+    - Players can place their bets before starting the game.
+    - Choose the desired bet amount, taking into account your available credit.
+3. Dynamic Payout Table:
+    - The payout table will update dynamically based on the selected bet amount.
+    - This ensures that the displayed payouts accurately reflect your wager.
+4. Starting the Game:
+    - Click the 'DEAL' button to commence the game.
+    - Cards will be dealt, and the gameplay will begin.
+
+</div>
+
+<div>
+
+## The Game
+
 Here's a quick overview of the gameplay process:
 
 1. Starting Credits:
@@ -68,26 +87,7 @@ Here's a quick overview of the gameplay process:
     - If you have a winning hand, the hand name will be displayed in the message box.
     - Your total credits will increase by the amount won.
 
-Enjoy the game and have fun playing Video Poker!
-
-</div>
-
-<div>
-
-## The Game
-
-1. Player starts with 100 coins.
-2. Once the player has selected their bet and has pressed the 'DEAL' button, the game will begin.
-   - The player's credits will be reduce by the amount wagered
-   - The deck shuffles
-3. 5 cards will then be dealt and displayed on the screen
-4. The player chooses which cards to hold by clicking on them. \* The card will fade out to indicate to the player the card has been held.
-5. The player hits the 'DRAW' button.
-6. All non-held cards are replaced.
-7. The game ends with this final draw and the player's hand is evaluated.
-8. If the hand is winning one, 
-   -the winning hand name will display in the message box.
-   -the player's total credits will increase by the amount won.
+Enjoy!
    </div>
 
 <div>

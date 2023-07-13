@@ -6,7 +6,7 @@
 
 body {
   background-color: #1E1E1E;
-  padding: 50px 50px;
+  padding: 25px;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -20,7 +20,7 @@ body {
 
 .container {
   background-color: rgba(0, 0, 0, 0);
-  max-height: 100vh;
+  max-height: 90vh;
   max-width: 150vh;
   margin: 0;
   display: grid;
@@ -160,7 +160,7 @@ ul {
 #betButton,
 #dealButton,
 #drawButton {
-  width: 15vmin;
+  width: 18vmin;
   height: 5vmin;
   border-radius: 10px;
   border: 0.1vmin solid #1E1E1E;
