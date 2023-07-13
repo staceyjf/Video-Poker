@@ -7,6 +7,10 @@
 body {
   background-color: #1E1E1E;
   padding: 50px 50px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-content: center;
   }
 
 .red {
@@ -17,6 +21,7 @@ body {
 .container {
   background-color: rgba(0, 0, 0, 0);
   max-height: 100vh;
+  max-width: 150vh;
   margin: 0;
   display: grid;
   gap: 10px;
