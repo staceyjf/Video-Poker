@@ -306,37 +306,33 @@ function getWinnerOutcome(arr) {
   // Check winning conditions in a specific order
   if (isGameFinished){
     if (isRoyalFlush) {
-        statusEl.innerHTML = "<h2>You win!</h2><h2>Royal Flush</h2><h2>What a win!</h2>";
+        statusEl.innerHTML = "<h2>You win!</h2><h2>Royal Flush</h2><h2>What a win!</h2><h2>Ready for a new game?</h2><h2>Hit NEW GAME</2>";
         moneyPot += Number(winningCoins[0]);
         coinEl.innerText = `You have ${moneyPot} coins`;
       } else if (isFourPair) {
-        statusEl.innerHTML = "<h2>You win!</h2><h2>A Flush</h2><h2>Great hand!</h2>";
+        statusEl.innerHTML = "<h2>You win!</h2><h2>A Flush</h2><h2>Great hand!</h2><h2>Ready for a new game?</h2><h2>Hit NEW GAME</2>";
         moneyPot += Number(winningCoins[2]);
         coinEl.innerText = `You have ${moneyPot} coins`;
       } else if (isFlush) {
-        statusEl.innerHTML = "<h2>You win!</h2><h2>Four of a Kind/h2><h2>Whoozer!</h2>";
+        statusEl.innerHTML = "<h2>You win!</h2><h2>Four of a Kind/h2><h2>Whoozer!</h2><h2>Ready for a new game?</h2><h2>Hit NEW GAME</2>";
         moneyPot += Number(winningCoins[4]);
         coinEl.innerText = `You have ${moneyPot} coins`;
       } else if (isThreePair) {
-        statusEl.innerHTML = "<h2>You win!</h2><h2>Three of a Kind</h2><h2>Not bad - enjoy those coins!</h2>";
+        statusEl.innerHTML = "<h2>You win!</h2><h2>Three of a Kind</h2><h2>Not bad - enjoy those coins!</h2><h2>Ready for a new game?</h2><h2>Hit NEW GAME</2>";
         moneyPot += Number(winningCoins[6]);
         coinEl.innerText = `You have ${moneyPot} coins`;
       } else if (isTwoPair) {
-        statusEl.innerHTML = "<h2>You win!</h2><h2>Two Pair</h2><h2>Could be worse!</h2>";
+        statusEl.innerHTML = "<h2>You win!</h2><h2>Two Pair</h2><h2>Could be worse!</h2><h2>Ready for a new game?</h2><h2>Hit NEW GAME</2>";
         moneyPot += Number(winningCoins[7]);
         coinEl.innerText = `You have ${moneyPot} coins`;
       } else if (isJacksOrBetter) {
-        statusEl.innerHTML = "<h2>You win!</h2><h2>Jacks or Better</h2><h2>Least you gained a coin</h2>";
+        statusEl.innerHTML = "<h2>You win!</h2><h2>Jacks or Better</h2><h2>Least you gained a coin</h2><h2>Ready for a new game?</h2><h2>Hit NEW GAME</2>";
         moneyPot += Number(winningCoins[8]);
         coinEl.innerText = `You have ${moneyPot} coins`;
       } else {
-        statusEl.innerHTML = "<h2>Better luck next time!</h2>";
+        statusEl.innerHTML = "<h2>Better luck next time!</h2><h2>Ready for a new game?</h2><h2>Hit NEW GAME</2>";
       }
   }
-
-  setTimeout(function() {
-    statusEl.innerHTML = "<h2>Ready for a new game</h2><h2>HIT the NEW GAME BUTTON</h2>";
-  }, 3000);
   
 }
 
