@@ -192,11 +192,13 @@ function deal() { // deals the player's first hand
 
  function hold(event) { // holds the card when clicked
   let holdEl = document.createElement('h6'); // creates a h6
-  event.target.appendChild(holdEl); // appends as a child to what card triggered i
+  event.target.appendChild(holdEl); // appends as a child to what card triggered it
   event.target.style.opacity = "0.5";
-  // console.log(event);
-  // console.log(event.target);
-  // console.log(event.target.childNodes[0]); 
+  console.log("The hold function at work:"); // comments for demo
+  console.log("The H6 appends as a child to what card triggered it");
+  console.log("CSS styling is added to the container");
+  console.log(event.target);
+  console.log(event.target.childNodes[0]); 
  }
 
 function draw() {// let's the player swop cards and then ends the game
@@ -209,8 +211,11 @@ function draw() {// let's the player swop cards and then ends the game
     if (!card.children[0]) { // if the Div doesn't have h6
       playerHandArray.splice(card.id, 1, playerCard); // repopulating playerHandArray
       card.className = `card ${playerCard} xlarge`;
-      // console.log(playerCard);
-      // console.log(card.id); 
+      console.log("draw() iterates through divs without h6s"); // comments for demo
+      console.log("using splice()to add the playerCard variable eg randomly generated card"); 
+      console.log("at the dynamically created index which using the .id property of the event"); 
+      console.log(playerCard);
+      console.log(card.id);
      ;
     }
   }))
@@ -316,13 +321,9 @@ function getWinnerOutcome(arr) {
         statusEl.innerHTML = "<h2>You win!</h2><h2>Three of a Kind</h2><h2>Not bad - enjoy those coins!</h2>";
         moneyPot += Number(winningCoins[6]);
         coinEl.innerText = `You have ${moneyPot} coins`;
-        console.log(moneyPot);
-        console.log(winningCoins[6]);
       } else if (isTwoPair) {
         statusEl.innerHTML = "<h2>You win!</h2><h2>Two Pair</h2><h2>Could be worse!</h2>";
         moneyPot += Number(winningCoins[7]);
-        console.log(moneyPot);
-        console.log(winningCoins[7]);
         coinEl.innerText = `You have ${moneyPot} coins`;
       } else if (isJacksOrBetter) {
         statusEl.innerHTML = "<h2>You win!</h2><h2>Jacks or Better</h2><h2>Least you gained a coin</h2>";
