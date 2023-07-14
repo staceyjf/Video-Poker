@@ -334,8 +334,8 @@ function getWinnerOutcome(arr) {
   }
 
   setTimeout(function() {
-    statusEl.innerHTML = "<h2>Ready for a new game <br> HIT the NEW GAME BTN</h2>";
-  }, 10000);
+    statusEl.innerHTML = "<h2>Ready for a new game</h2><h2>HIT the NEW GAME BUTTON</h2>";
+  }, 3000);
   
 }
 
