@@ -1,4 +1,6 @@
 console.log('Welcome to Video Poker')
+console.log('Areas of improvement')
+console.log('Intro some guards, fix unhold and some additional game logic')
 
 /*----- constants -----*/
 const numOfCards = 5; // the number of cards on the board
@@ -56,6 +58,7 @@ const handRanks = [
 let deck;
 let isGameFinished;
 let isFirstDealClick;
+let clickCount;
 let winningCoins;
 let moneyPot;
 let betPot;
@@ -162,6 +165,7 @@ function play() {
   statusEl.innerHTML = '<h2>Place your bets!</h2><h2>Ready to play?<br>Hit deal</h2>'; 
   isGameFinished = false; // sets the game back to 'in play'
   deck = []; // clears the deck array
+  clickCount = false;
   playerHandArray = []; // clears the [♠A, ..] array that will be used for winning logic
   playerSuitObject = {}; // clears the {♠, ..}  that will be used for winning logic
   playerRankObject = {};// clears the {A, ..}  that will be used for winning logic 
@@ -178,67 +182,59 @@ function play() {
  }
 
 function deal() {
-  
-if (isFirstDealClick) { // guard so deal() doesn't run twice
-  // deals the player's first hand
-  const cardEls = boardEl.querySelectorAll('.card');
-  statusEl.innerHTML = "<h2>Click cards to hold</h2><h2>Hit DRAW when ready!</h2>";
-  isFirstDealClick = false;
-  dealBtn.textContent = 'DRAW';
-  let playerCard; 
-  // adds 5 random cards 
-  cardEls.forEach((card => { 
-    playerCard = rndCard();
-    // console.log(playerCard);
-    card.className = `card ${playerCard} xlarge `;
-    playerHandArray.push(playerCard); // eg [♠A, ..] for winning logic
-    console.log(playerHandArray);
-  })) 
-  
-  } else {
-    
-
-    // let's the player swop cards and then ends the game
+  if (isFirstDealClick) { // guard so deal() doesn't run twice
+    // deals the player's first hand
     const cardEls = boardEl.querySelectorAll('.card');
-    
-    let playerCard; // variable that will be assigned randomly generated card
+    statusEl.innerHTML = "<h2>Click cards to hold</h2><h2>Hit DRAW when ready!</h2>";
+    isFirstDealClick = false;
+    dealBtn.textContent = 'DRAW';
+    let playerCard;
 
-    cardEls.forEach((card => { // replacing the non-hold cards
-    playerCard = rndCard();
-    console.log(playerCard); 
-    if (!card.children[0]) { // if the Div doesn't have h6
-      playerHandArray.splice(card.id, 1, playerCard); // repopulating playerHandArray
-      console.log(playerHandArray);
-      card.className = `card ${playerCard} xlarge`;
-      ;
+    cardEls.forEach((card => { // adds 5 random cards 
+      playerCard = rndCard();
+      // console.log(playerCard);
+      card.className = `card ${playerCard} xlarge `;
+      playerHandArray.push(playerCard); // eg [♠A, ..] for winning logic
+    })) 
+    } else {
+      
+      // let's the player swop cards and then ends the game
+      const cardEls = boardEl.querySelectorAll('.card');
+      let playerCard; // variable that will be assigned randomly generated card
+
+      cardEls.forEach((card => { // replacing the non-hold cards
+      playerCard = rndCard();
+      if (!card.children[0]) { // if the Div doesn't have h6
+        playerHandArray.splice(card.id, 1, playerCard); // repopulating playerHandArray
+        card.className = `card ${playerCard} xlarge`;}
+      }))
+      getWinnerOutcome(playerHandArray); // its time to check if there was a winner
     }
-    }))
-    getWinnerOutcome(playerHandArray); // its time to check if there was a winner
   }
 
+function hold(event) {
+  if (!clickCount) {  // holds the card when clicked eg. if it doesn't have h6
+    let holdEl = document.createElement('h6'); // creates a h6
+    event.target.appendChild(holdEl); // appends as a child to what card triggered it
+    event.target.style.opacity = "0.5";
+    clickCount = true;
+  } else { // changes it back if clicked again
+    event.target.style.opacity = "1";
+    clickCount = false;
+  }
 }
-
- function hold(event) { // holds the card when clicked
-  let holdEl = document.createElement('h6'); // creates a h6
-  event.target.appendChild(holdEl); // appends as a child to what card triggered it
-  event.target.style.opacity = "0.5";
- }
-
-// function draw() {
-
-// }
 
 /*-----Did the player win logic -----*/
 function getWinnerOutcome(arr) { 
   // Count of the suit
-  playerSuitObject = arr.reduce(function(acc, curr) { // creates the object counter
+  playerSuitObject = arr.reduce((acc, curr) => { // creates the object counter
     let currSuit = curr.split("")[0]; 
     acc[currSuit] = acc[currSuit] ? acc[currSuit] +1 : 1
     return acc
   }, {})
 
   // Count of Rank
-  let playerRankObject = arr.reduce(function (acc, curr) {
+  let playerRankObject = arr.reduce((acc, curr) => {
 	const myDict = { J: 11, Q: 12, K: 13, A: 14 }; 
   // Giving these numerical values as other cards rep by two digits eg 08, 09, 10
 	let currCardValue = curr.split("").slice(1).join(""); // ranks
@@ -253,8 +249,11 @@ function getWinnerOutcome(arr) {
 
   // payout based on best odds
   let isRoyalFlush = false;
+  let isStraightFlush = false;
   let isFourPair = false;
+  let isFullHouse = false;
   let isFlush = false;
+  let isStraight = false;
   let isThreePair = false;
   let isTwoPair = false;
   let isJacksOrBetter = false;
