@@ -53,8 +53,10 @@ const handRanks = [
 ];
 
 /*----- app's state (variables) -----*/
+let deck;
 let isGameFinished;
-let winningCoins
+let isFirstDealClick;
+let winningCoins;
 let moneyPot;
 let betPot;
 let playerHandArray; // eg [♠A, ..] used to evaluate game logic
@@ -68,12 +70,13 @@ const payoutEls = document.getElementById('payoutOdds'); // the payout table
 const payoutPlayerEls = document.getElementById('payoutPlayer'); // the player's payout table
 const coinEl = document.getElementById('creditTotal'); // player's available coin
 const betEl = document.getElementById('totalBet');// betting total
+const dealBtn = document.getElementById('dealButton');
 
 /*----- event listeners -----*/
 // TO DO: check all the functions here
 document.getElementById('resetButton').addEventListener('click', init); // New Player
 document.getElementById('newGameButton').addEventListener('click', play); // New Game
-document.getElementById('dealButton').addEventListener('click', deal); // 1st hand
+document.getElementById('dealButton').addEventListener('click', deal);
 document.getElementById('gameTable').addEventListener('click', hold); // hold cards
 document.getElementById('plusButton').addEventListener('click', addMoney); // Add
 document.getElementById('minusButton').addEventListener('click', minusMoney); // Minus
@@ -86,7 +89,7 @@ function getOdds() {
   payoutEls.appendChild(newList); 
   
   for (let i = 0; i < 9; i++) {
-    newListEls = document.createElement('li'); 
+    newListEls = document.createElement('li'); // creates the odds
     newListEls.id = i; 
     newListEls.innerText = handRanks[i].hand + " " + handRanks[i].pOdds;
     newList.appendChild(newListEls); 
@@ -97,26 +100,13 @@ function getOdds() {
   payoutPlayerEls.appendChild(newListPlayer); 
   
   for (let i = 0; i < 9; i++) {
-    newListPlayerEls = document.createElement('li'); 
+    newListPlayerEls = document.createElement('li'); // updates player's specific odds
     newListPlayerEls.id = i; 
     newListPlayerEls.innerText = (handRanks[i].pOdds * betPot);
     newListPlayer.appendChild(newListPlayerEls); 
   }
 }
 
-function replaceButton() {
-  // Create Draw Btn
-  const drawBtn = document.createElement('button');
-  drawBtn.id = 'drawButton'
-  drawBtn.textContent = 'DRAW';
-
-  const dealBtn = document.getElementById('dealButton');
-
-  // Replaces Deal Btn with Draw Btn & adds event listener
-  dealBtn.parentNode.replaceChild(drawBtn, dealBtn);
-  document.querySelector('.container').style.gridTemplateAreas = '"hdr hdr hdr hdr hdr" "pOddsBox pOddsBox pPlayerBox gStatusBox gStatusBox" "gTableBox gTableBox gTableBox gTableBox gTableBox" "cTotalBox cTotalBox cTotalBox cTotalBox cTotalBox" ". nGameButton bButton drawButton rButton"'
-  document.getElementById('drawButton').addEventListener('click', draw); // Final hand
-}
 
 /*----- Wager render eg coins and updates odds on player payout table -----*/
 function whatIsMyBet(betTotal, myBet) { // updates the total coins, the bet total and the player payout table
@@ -150,21 +140,33 @@ function updateOdds() {
 }
 
 /*-----Rnd cards -----*/
-function rndCard() { // creates a single random card
-  rndSuitIdx = Math.floor(Math.random() * suit.length);
-  rndRankIdx = Math.floor(Math.random() * rank.length);
-  const card = suit[rndSuitIdx] + rank[rndRankIdx]; // card string eg♠A
+function rndCard() { // creates deck as a guard
+  if (deck.length === 0) {
+    for (let i = 0; i < suit.length; i++) {
+      for (let ii = 0; ii < rank.length; ii++) {
+        deck.push(suit[i] + rank[ii]);
+      }
+    }
+  }
+
+  // Generate a random card
+  const index = Math.floor(Math.random() * deck.length);
+  const card = deck[index];
+  deck.splice(index, 1); // Remove the selected card from the deck
   return card;
 }
 
 /*----- Game flow -----*/
-function play() { // resets els except moneyPot & betPot
+function play() {
   boardEl.innerHTML = ''; // clears the game table
   statusEl.innerHTML = '<h2>Place your bets!</h2><h2>Ready to play?<br>Hit deal</h2>'; 
   isGameFinished = false; // sets the game back to 'in play'
+  deck = []; // clears the deck array
   playerHandArray = []; // clears the [♠A, ..] array that will be used for winning logic
   playerSuitObject = {}; // clears the {♠, ..}  that will be used for winning logic
-  playerRankObject = {};// clears the {A, ..}  that will be used for winning logic  whatIsMyBet(moneyPot, betPot); 
+  playerRankObject = {};// clears the {A, ..}  that will be used for winning logic 
+  isFirstDealClick = true; // ensure that old deal() runs first
+  whatIsMyBet(moneyPot, betPot); // retains the coin total
 
   // adds 5 'backs' of cards to the Games table
   for (let i=0; i < numOfCards; i++) {
@@ -175,57 +177,59 @@ function play() { // resets els except moneyPot & betPot
    } 
  }
 
-function deal() { // deals the player's first hand
+function deal() {
+  
+if (isFirstDealClick) { // guard so deal() doesn't run twice
+  // deals the player's first hand
   const cardEls = boardEl.querySelectorAll('.card');
-
-  statusEl.innerHTML = "<h2>Hit DRAW when ready!</h2>";
-
+  statusEl.innerHTML = "<h2>Click cards to hold</h2><h2>Hit DRAW when ready!</h2>";
+  isFirstDealClick = false;
+  dealBtn.textContent = 'DRAW';
   let playerCard; 
-
   // adds 5 random cards 
   cardEls.forEach((card => { 
     playerCard = rndCard();
+    // console.log(playerCard);
     card.className = `card ${playerCard} xlarge `;
     playerHandArray.push(playerCard); // eg [♠A, ..] for winning logic
-  }))
- } 
+    console.log(playerHandArray);
+  })) 
+  
+  } else {
+    
+
+    // let's the player swop cards and then ends the game
+    const cardEls = boardEl.querySelectorAll('.card');
+    
+    let playerCard; // variable that will be assigned randomly generated card
+
+    cardEls.forEach((card => { // replacing the non-hold cards
+    playerCard = rndCard();
+    console.log(playerCard); 
+    if (!card.children[0]) { // if the Div doesn't have h6
+      playerHandArray.splice(card.id, 1, playerCard); // repopulating playerHandArray
+      console.log(playerHandArray);
+      card.className = `card ${playerCard} xlarge`;
+      ;
+    }
+    }))
+    getWinnerOutcome(playerHandArray); // its time to check if there was a winner
+  }
+
+}
 
  function hold(event) { // holds the card when clicked
   let holdEl = document.createElement('h6'); // creates a h6
   event.target.appendChild(holdEl); // appends as a child to what card triggered it
   event.target.style.opacity = "0.5";
-  console.log("The hold function at work:"); // comments for demo
-  console.log("The H6 appends as a child to what card triggered it");
-  console.log("CSS styling is added to the container");
-  console.log(event.target);
-  console.log(event.target.childNodes[0]); 
  }
 
-function draw() {// let's the player swop cards and then ends the game
-  const cardEls = boardEl.querySelectorAll('.card');
-  
-  let playerCard; // variable that will be assigned randomly generated card
+// function draw() {
 
-   cardEls.forEach((card => { // replacing the non-hold cards
-    playerCard = rndCard(); 
-    if (!card.children[0]) { // if the Div doesn't have h6
-      playerHandArray.splice(card.id, 1, playerCard); // repopulating playerHandArray
-      card.className = `card ${playerCard} xlarge`;
-      console.log("draw() iterates through divs without h6s"); // comments for demo
-      console.log("using splice()to add the playerCard variable eg randomly generated card"); 
-      console.log("at the dynamically created index which using the .id property of the event"); 
-      console.log(playerCard);
-      console.log(card.id);
-     ;
-    }
-  }))
-
-  getWinnerOutcome(playerHandArray); // its time to check if there was a winner
-}
+// }
 
 /*-----Did the player win logic -----*/
 function getWinnerOutcome(arr) { 
-  
   // Count of the suit
   playerSuitObject = arr.reduce(function(acc, curr) { // creates the object counter
     let currSuit = curr.split("")[0]; 
@@ -292,10 +296,10 @@ function getWinnerOutcome(arr) {
 
   // game logic for  "Jacks or Better" win
   for (let key in playerRankObject) {
-    if ((playerRankObject[11] >= handRanks[8].count) ||
+    if (((playerRankObject[11] >= handRanks[8].count) ||
         (playerRankObject[12] >= handRanks[8].count) ||
         (playerRankObject[13] >= handRanks[8].count) ||
-        (playerRankObject[14] >= handRanks[8].count)) {
+        (playerRankObject[14] >= handRanks[8].count)) && (playerRankObject[key] === handRanks[2].count)) {
           isJacksOrBetter = true;
           break;
     }
@@ -333,7 +337,6 @@ function getWinnerOutcome(arr) {
         statusEl.innerHTML = "<h2>Better luck next time!</h2><h2>Ready for a new game?</h2><h2>Hit NEW GAME</2>";
       }
   }
-  
 }
 
 /*----- other -----*/
@@ -341,7 +344,7 @@ init();
 
 function render() {  // responsible for rendering all state to the dom
   getOdds() // sets up both payout tables
-  play(); // 5 upside cards
+  play(); // 5 upside cards & coin total
   coinEl.innerText = `You have ${moneyPot} coins`;
   betEl.innerText = `${betPot} coin`;
 }

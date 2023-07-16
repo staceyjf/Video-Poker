@@ -129,12 +129,12 @@ img {
   align-self: start;
   }
 
-#drawButton {
+/* #drawButton {
   grid-area: drawButton;
   background-color: #D20915;
   justify-self: start;
   align-self: start;
-  }
+  } */
 
 h1, h2 {
   color: white;
